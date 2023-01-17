@@ -1,4 +1,4 @@
-# mas-to-do
+# Mas To Do
 A To-Do List Application
 
 1/17/2023
