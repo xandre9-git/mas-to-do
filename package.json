@@ -1,0 +1,27 @@
+{
+  "name": "mas-to-do",
+  "version": "1.0.0",
+  "description": "Mas To Do: A To-Do List Application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xandre9-git/mas-to-do.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xandre9-git/mas-to-do/issues"
+  },
+  "homepage": "https://github.com/xandre9-git/mas-to-do#readme",
+  "devDependencies": {
+    "css-loader": "^6.7.3",
+    "style-loader": "^3.3.1",
+    "webpack-cli": "^5.0.1"
+  }
+}
