@@ -1,0 +1,15 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.title {
+  color: white;
+}
+
+@font-face {
+  font-family: "Oswald";
+  src: url('./fonts/Oswald-Regular.ttf'), format('ttf');
+  font-weight: normal;
+  font-style: normal;
+}
