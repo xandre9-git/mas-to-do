@@ -1,3 +1,6 @@
+import { addProject } from "./todoModule";
+import { createListItem } from "./todoModule";
+
 // This is for the DOM
 
 const body = document.getElementById("content");
@@ -19,12 +22,24 @@ projectsTitle.textContent = "Projects"
 const projectsContainer = document.createElement('div');
 projectsContainer.id = "projects-container";
 
-const projectLists = document.createElement('ul');
+const projectsList = document.createElement('ul');
+projectsList.id = "projects-ul"
 const addProjectButton = document.createElement('li');
-addProjectButton.id = "add-project";
+addProjectButton.className = "add-projects";
 addProjectButton.textContent = "+ Add Project";
-projectLists.appendChild(addProjectButton);
-projectsContainer.appendChild(projectLists);
+addProjectButton.addEventListener('click', function(){
+  let res = addProject();
+  let project = createListItem(res);
+  project.className = 'add-projects';
+  project.id = project.textContent;
+
+  if (project.textContent != "") {
+    projectsList.prepend(project);
+    return projectsList;
+  }
+});
+projectsList.appendChild(addProjectButton);
+projectsContainer.appendChild(projectsList);
 
 
 
