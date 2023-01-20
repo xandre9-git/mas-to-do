@@ -53,9 +53,10 @@ body {
   height: 100%;
 }
 
-#add-project {
+.add-projects {
   color: white;
   padding-left: 5%;
+  cursor: pointer;
 }
 
 .title {
