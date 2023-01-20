@@ -1,10 +1,8 @@
 * {
   margin: 0;
   padding: 0;
-}
-
-.title {
-  color: white;
+  box-sizing: border-box;
+  /* border: 1px solid black; */
 }
 
 @font-face {
@@ -13,3 +11,55 @@
   font-weight: normal;
   font-style: normal;
 }
+
+html, 
+body {
+  font: 1em "Oswald", monospace;
+  /* background-color: gold; */
+}
+
+#content {
+  display: grid;
+  grid-template-rows: 1fr 15fr;
+  height: 100vh;
+  grid-template-areas: 
+    "a a a a"
+    "b b b b"
+    "b b b b"
+    "b b b b ";
+}
+
+#top-bar {
+  grid-area: a;
+  /* height: 50px; */
+  width: 100%;
+  background-color: gold;
+}
+
+#left-side-bar {
+  grid-area: b;
+  width: 18vw;
+  background-color: dodgerblue;
+}
+
+#projects-title {
+  color: gold;
+  font-size: 2em;
+  text-align: center;
+  padding-top: 10;
+}
+
+#projects-container {
+  height: 100%;
+}
+
+#add-project {
+  color: white;
+  padding-left: 5%;
+}
+
+.title {
+  color: dodgerblue;
+  padding-left: 2.5%;
+}
+
