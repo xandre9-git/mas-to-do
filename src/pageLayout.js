@@ -29,12 +29,12 @@ addProjectButton.className = "add-projects";
 addProjectButton.textContent = "+ Add Project";
 addProjectButton.addEventListener('click', function(){
   let res = addProject();
-  let project = createListItem(res);
+  let project = createListItem(res.projects);
   project.className = 'add-projects';
   project.id = project.textContent;
-
   if (project.textContent != "") {
     projectsList.prepend(project);
+    console.log(res.projects);  
     return projectsList;
   }
 });
