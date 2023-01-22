@@ -1,4 +1,4 @@
-import { addProject } from "./todoModule";
+import { addProject, projects } from "./todoModule";
 import { createListItem } from "./todoModule";
 
 // This is for the DOM
@@ -27,9 +27,13 @@ projectsList.id = "projects-ul"
 const addProjectButton = document.createElement('li');
 addProjectButton.className = "add-projects";
 addProjectButton.textContent = "+ Add Project";
+
+
+
+
 addProjectButton.addEventListener('click', function(){
   let res = addProject();
-  let project = createListItem(res.projects);
+  let project = createListItem(res.projects[projects.length -1]);
   project.className = 'add-projects';
   project.id = project.textContent;
   if (project.textContent != "") {
