@@ -12,6 +12,7 @@ function toDo(){
   // this is to execute when user clicks the + button.
 }
 
+// this function adds project name to array
 function addProject(){
   // implement addeventlistener for click of add project button
   // button is pressed
@@ -32,37 +33,27 @@ function createListItem(listName) {
 
   // create project button container
   let projectBtns = document.createElement('div');
-  projectBtns.className = "project-btns";
+  projectBtns.className = "project-btns-container";
 
   // create edit button
-  let projectEditBtn = document.createElement('button');
-  projectEditBtn.type = "button";
-  // projectEditBtn.className = "project-btns"
+  let projectEditBtn = document.createElement('div');
+  projectEditBtn.className = "project-btns, filter-white"
   projectEditBtn.id = "edit-btn";
-  let editBtnImg = document.createElement('img');
-  editBtnImg.src = "/src/images/edit.svg";
-  editBtnImg.className = "project-btns filter-white";
+  projectEditBtn.title = "Edit";
  
-  editBtnImg.title = "Edit";
-  projectEditBtn.appendChild(editBtnImg);
-
-   // create delete button
-  let projectDelBtn = document.createElement('button');
-  projectDelBtn.type = "button";
-  // projectDelBtn.className = "project-btns";
+  // create delete button
+  let projectDelBtn = document.createElement('div');
+  projectDelBtn.className = "project-btns";
   projectDelBtn.id = "del-btn";
-  let delBtnImg = document.createElement('img');
-  delBtnImg.src = "/src/images/delete.svg";
-  delBtnImg.className = "project-btns filter-white";
-  delBtnImg.title = "Delete"
-  projectDelBtn.appendChild(delBtnImg);
+  projectDelBtn.className = "project-btns filter-white";
+  projectDelBtn.title = "Delete"
   
+
   projectBtns.appendChild(projectEditBtn);
   projectBtns.appendChild(projectDelBtn);
+  
   listItem.appendChild(projectBtns);
 
-
- 
   return listItem;
 }
 
