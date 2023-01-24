@@ -34,7 +34,8 @@ addProjectButton.textContent = "+ Add Project";
 addProjectButton.addEventListener('click', function(){
   let res = addProject();
   let project = createListItem(res.projects[projects.length -1]);
-  project.className = 'add-projects';
+  project.className = 'added-projects';
+  console.log(project.textContent);
   project.id = project.textContent;
   if (project.textContent != "") {
     projectsList.prepend(project);
