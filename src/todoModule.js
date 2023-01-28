@@ -1,31 +1,30 @@
 import { body } from "./pageLayout";
-
-function Projects(title) {
-  this.title = title;
-}
-
-let projects = [];
+import { projects } from "./dataStorage";
 
 
-function toDo(){
-  // to-do list app code
-  // this is to execute when user clicks the + button.
-}
-
-// this function adds project name to array
+// this function gets project name and stores as a string
 function addProject(){
-  // implement addeventlistener for click of add project button
-  // button is pressed
-  // prompt needs to display
-  // user types name of project
-  // project gets displayed above '+ Add Project'
   let projectName = prompt("Enter name of project:");
-  // projectName is a string to use as the textContent of a created li
+  // projectName is a string used as the textContent of created list item
   if (projectName != null) {
-    projects.push(projectName);
+    return projectName;
   }
-  return { projectName, projects };
 }
+
+// this function takes string of project name, gives it a class name, an id, checks that it is not empty, and prepends it to the desired node
+function projectListSetter(str, node) {
+  let project = createListItem(str);
+  project.className = "added-projects";
+  // console.log(project.textContent);
+  project.id = project.textContent;
+  if (project.textContent != "") {
+    node.prepend(project);
+    console.log(typeof str);
+    console.log(str.projects);
+    return node;
+  }
+} 
+ 
 
 function createListItem(listName) {
   let listItem = document.createElement('li');
@@ -57,4 +56,4 @@ function createListItem(listName) {
   return listItem;
 }
 
-export { addProject, createListItem, projects };
+export { addProject, createListItem, projectListSetter };
