@@ -3,6 +3,14 @@ import { createListItem } from "./todoModule";
 import { projects } from "./dataStorage";
 import { projectListSetter } from "./todoModule";
 
+if (JSON.parse(window.localStorage.getItem("projectnames")).length > 0) {
+  window.projects = JSON.parse(window.localStorage.getItem("projectnames"));
+  console.log(`Projects array inside JSON parse: ${window.projects}`);
+  console.log("JSON parse section fired.");
+} else {
+  projects = [];
+}
+
 // This is for the DOM
 
 const body = document.getElementById("content");
@@ -33,29 +41,38 @@ addProjectButton.textContent = "+ Add Project";
 addProjectButton.addEventListener("click", function () {
   let res = addProject();
   console.log(`res value: ${res}`);
-  // projects.push(res);
+  window.localStorage.setItem("projectname", res);
   // if statement to add item to array if no previous items exist
   if (projects.length < 1) {
     projects.push(res);
+    // use local storage
+    window.localStorage.setItem("projectnames", JSON.stringify(projects));
     console.log(`Executed.`);
     projectListSetter(res, projectsList);
   }
 
-  // if statement to check if project does not already exist
-
+  // for loop and if statement to check if project does not already exist
   for (let i = 0; i < projects.length; i++) {
     console.log(projects.includes(res));
     if (!projects.includes(res)) {
       projects.push(res);
+      window.localStorage.setItem("projectnames", JSON.stringify(projects));
       console.log(`Executed as well. Projects now has: ${projects}`);
       projectListSetter(res, projectsList);
     }
   }
 
   console.log(`projects current values: ${projects}`);
-  console.log(typeof projects);
   console.log(`projects length: ${projects.length}`);
 });
+
+// for loop to add existing projects into projects section on DOM
+for (let i = 0; i < window.projects.length; i++) {
+  console.log(`This calls ${i}`);
+  console.log(window.projects);
+  projectListSetter(projects[i], projectsList);
+}
+
 projectsList.appendChild(addProjectButton);
 projectsContainer.appendChild(projectsList);
 
