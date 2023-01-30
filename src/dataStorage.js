@@ -1,6 +1,16 @@
-import { addProject } from "./todoModule";
+let projects = JSON.parse(window.localStorage.getItem("projectnames"));
 
-let projects = [];
+// window.localStorage.setItem("projectname", JSON.stringify(projects));
+// let projectsString = window.localStorage.getItem("projectname");
+// projects = JSON.parse(projectsString);
+
+
+// create global reference to array
+window.projects = projects;
+
+export { projects }
+
+
 
 // if ((window.localStorage.getItem("projectname")) != null) {
 //   projects = window.localStorage.getItem("projectname")
@@ -16,5 +26,3 @@ let projects = [];
 
 // // Example Project
 // const odinProject = new Projects('The Odin Project');
-
-export { projects }
