@@ -1,6 +1,4 @@
-import { body } from "./pageLayout";
-import { projects } from "./dataStorage";
-
+// TO DO MODULES
 
 // this function gets project name and stores as a string
 function addProject(){
@@ -15,7 +13,6 @@ function addProject(){
 function projectListSetter(str, node) {
   let project = createListItem(str);
   project.className = "added-projects";
-  // console.log(project.textContent);
   project.id = project.textContent;
   if (project.textContent != "") {
     node.prepend(project);
@@ -25,7 +22,7 @@ function projectListSetter(str, node) {
   }
 } 
  
-
+// this function creates the list item on the DOM
 function createListItem(listName) {
   let listItem = document.createElement('li');
   listItem.textContent = listName;
@@ -47,7 +44,6 @@ function createListItem(listName) {
   projectDelBtn.className = "project-btns filter-white";
   projectDelBtn.title = "Delete"
   
-
   projectBtns.appendChild(projectEditBtn);
   projectBtns.appendChild(projectDelBtn);
   
