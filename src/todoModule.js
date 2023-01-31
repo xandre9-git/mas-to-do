@@ -1,5 +1,7 @@
 // TO DO MODULES
 
+import { projects } from "./dataStorage";
+
 // this function gets project name and stores as a string
 function addProject(){
   let projectName = prompt("Enter name of project:");
@@ -16,8 +18,6 @@ function projectListSetter(str, node) {
   project.id = project.textContent;
   if (project.textContent != "") {
     node.prepend(project);
-    console.log(typeof str);
-    console.log(str.projects);
     return node;
   }
 } 
@@ -44,12 +44,21 @@ function createListItem(listName) {
   projectDelBtn.className = "project-btns filter-white";
   projectDelBtn.title = "Delete"
   
+  // append elements
   projectBtns.appendChild(projectEditBtn);
-  projectBtns.appendChild(projectDelBtn);
-  
+  projectBtns.appendChild(projectDelBtn); 
   listItem.appendChild(projectBtns);
 
   return listItem;
 }
 
-export { addProject, createListItem, projectListSetter };
+// delete project function
+function deleteProject(projectname, arr) {
+  // get target project and delete it from database
+  const index = arr.indexOf(projectname);
+  let x = arr.splice(index, 1);
+  document.location.reload();
+  return arr;
+}
+
+export { addProject, createListItem, projectListSetter, deleteProject };
