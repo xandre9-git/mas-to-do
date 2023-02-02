@@ -7,12 +7,12 @@
 
 @font-face {
   font-family: "Oswald";
-  src: url('./fonts/Oswald-Regular.ttf'), format('ttf');
+  src: url("./fonts/Oswald-Regular.ttf"), format("ttf");
   font-weight: normal;
   font-style: normal;
 }
 
-html, 
+html,
 body {
   font: 1em "Oswald", monospace;
   /* background-color: gold; */
@@ -27,7 +27,7 @@ button {
   display: grid;
   grid-template-rows: 1fr 15fr;
   height: 100vh;
-  grid-template-areas: 
+  grid-template-areas:
     "a a a a"
     "b b b b"
     "b b b b"
@@ -58,13 +58,13 @@ button {
   height: 100%;
 }
 
-.add-projects, .added-projects {
+.add-projects,
+.added-projects {
   display: flex;
   justify-content: space-between;
   padding-left: 5%;
   align-items: center;
 }
-
 
 .project-btns {
   display: flex;
@@ -77,33 +77,36 @@ button {
 
 #edit-btn:hover {
   /* Adds gold filter */
-  filter: invert(82%) sepia(58%) saturate(2058%) hue-rotate(359deg) brightness(104%) contrast(107%);
+  filter: invert(82%) sepia(58%) saturate(2058%) hue-rotate(359deg)
+    brightness(104%) contrast(107%);
 }
 
 #del-btn:hover {
   /* Adds gold filter */
-  filter: invert(82%) sepia(58%) saturate(2058%) hue-rotate(359deg) brightness(104%) contrast(107%);
+  filter: invert(82%) sepia(58%) saturate(2058%) hue-rotate(359deg)
+    brightness(104%) contrast(107%);
 }
 
-
-
-#del-btn, #edit-btn {
+#del-btn,
+#edit-btn {
   height: 24px;
   width: 24px;
   background: none;
 }
 
 .added-projects:hover #del-btn {
-  background-image: url('./images/delete.svg');
-  background-size: 100% 100%;  
+  background-image: url("./images/delete.svg");
+  background-size: 100% 100%;
 }
 
 .added-projects:hover #edit-btn {
-  background-image: url('./images/edit.svg');
-  background-size: 100% 100%;  
+  background-image: url("./images/edit.svg");
+  background-size: 100% 100%;
 }
 
-.add-projects, .added-projects, .project-btns {
+.add-projects,
+.added-projects,
+.project-btns {
   color: white;
   cursor: pointer;
   font-size: 1.25em;
@@ -117,13 +120,12 @@ li.added-projects:hover {
   color: gold;
 }
 
-
 .filter-white {
-  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(125deg) brightness(100%) contrast(102%);
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(125deg)
+    brightness(100%) contrast(102%);
 }
 
 .title {
   color: dodgerblue;
   padding-left: 2.5%;
 }
-
