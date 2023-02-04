@@ -16,6 +16,8 @@ html,
 body {
   font: 1em "Oswald", monospace;
   /* background-color: gold; */
+  height: 100%;
+  margin: 0;
 }
 
 button {
@@ -23,15 +25,20 @@ button {
   border: none;
 }
 
+ul,li {
+  list-style-type: none;
+}
+
 #content {
   display: grid;
   grid-template-rows: 1fr 15fr;
-  height: 100vh;
+  grid-template-columns: 1fr 15fr;
+  height: 100%;
   grid-template-areas:
-    "a a a a"
-    "b b b b"
-    "b b b b"
-    "b b b b ";
+    "a a a a a"
+    "b c c c c"
+    "b c c c c"
+    "b c c c c";
 }
 
 #top-bar {
@@ -47,12 +54,55 @@ button {
   background-color: dodgerblue;
 }
 
+#to-dos-container {
+  grid-area: c;
+  background-color: lightgreen;
+}
+
+.task-boxes-container {
+  /* gets boxes to align as columns besides each other */
+  display: flex;
+  justify-content: space-around;
+  height: 100%;
+}
+
+.to-do-boxes {
+  background-color: #ffff88;
+  height: 90%;
+  width: 96%;
+  margin: 1% 2% 2% 2%;
+}
+
+.to-do-title {
+  color: palevioletred;
+  margin-left: 2%;
+}
+
+#add-task {
+  margin: 1%;
+  font-size: 2em;
+}
+
 #projects-title {
   color: gold;
   font-size: 2em;
   text-align: center;
   padding-top: 10;
 }
+
+#current-tasks, #task-details {
+  width: 50%;
+}
+
+#task-details > div {
+  background-color: paleturquoise;
+}
+
+#task-details > h2 {
+  color: rgb(141, 92, 190);
+}
+
+
 
 #projects-container {
   height: 100%;
@@ -110,6 +160,11 @@ button {
   color: white;
   cursor: pointer;
   font-size: 1.25em;
+}
+
+#add-task {
+  color: rebeccapurple;
+  /* text-decoration: none; */
 }
 
 .add-projects:hover {
