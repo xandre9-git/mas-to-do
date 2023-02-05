@@ -78,7 +78,6 @@ function DOMProjectAdder() {
       }
     }
   }
-  allTasks();
   return projectListSetter;
 }
 
@@ -93,27 +92,27 @@ function deleteProject(projectname, arr) {
 
 // to do boards
 
-// upon clicking project name all three boards (past, present, and future) need to be displayed
-function allTasks(){
+// current to-do's
+function addTask(desc) {
+  const taskContainer = document.createElement("ul");
+  taskContainer.id = "tasks";
+  const taskDesc = document.createElement("li");
+  taskDesc.className = "checklist-task-item";
+  taskDesc.textContent = desc;
+  const taskCheckBox = document.createElement("input");
+  taskCheckBox.type = "checkbox";
+  taskContainer.appendChild(taskDesc);
+  taskContainer.appendChild(taskCheckBox);
+  
+  // taskContainer.appendChild(taskBtnsContainer);
 
-  console.log(todoBoardsContainer);
-  alert('Alert');
-}
-
-// present to-do's
-function presentTasks(projectName, input) {
-  console.log(`Current to-do's: ${projectName}`);
-  const todo = {
-    checkbox: description,
-  };
   // get project name and create an editable board allowing user to add tasks
   // use checkboxes
   // design: static dimensions vs dynamic. dynamic for mobile responsiveness
   // needs title: 'Present'
   // object needs to be created to host project to-do's
   // logic implementation separate from design
-  const listItem = document.createElement('li');
-  
+  return taskContainer;
 }
 
 // future to-do's
@@ -132,4 +131,5 @@ export {
   projectListSetter,
   DOMProjectAdder,
   deleteProject,
+  addTask,
 };
