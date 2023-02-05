@@ -1,3 +1,6 @@
+import { addTask } from "./todoModule";
+import { createListItem } from "./todoModule";
+
 // project names array
 let projects = JSON.parse(window.localStorage.getItem("projectnames"));
 
@@ -6,28 +9,36 @@ window.projects = projects;
 
 // task object creator
 
-function Task(project, desc, dateDue, priority) {
-  this.project = project
+function Task(title, desc, dateDue, priority, project) {
+  this.title = title;
   this.desc = desc;
   this.dateDue = dateDue;
   this.priority = priority;
+  this.project = project;
   this.commands = function commands(){
-    // placeholder
+    console.log(`Title: ${this.title}\nDescription: ${this.desc}\nDate Due: ${this.dateDue}\nPriority: ${this.priority}\nProject: ${this.project}`);
   }
 }
 
 // example task
 
 const practiceProgramming = new Task(
-  "Odin",
-  "Practice programming for two hours",
-  new Date(2023, 1, 3)
+  "Practice programming",
+  "Reinforce prior learned material and learn more new concepts",
+  new Date(2023, 1, 4),
+  "High",
+  "Odin"
 )
-console.log(`practiceProgramming: ${practiceProgramming.project} ${practiceProgramming.desc} ${practiceProgramming.dateDue}`);
+console.log(`${practiceProgramming.commands()}`);
+
+// let variable = addTask();
+// console.log(`This shows: ${variable}`);
 
 // to-do array
 // will store objects as items
 let toDos = [];
+
+
 
 export { projects };
 
