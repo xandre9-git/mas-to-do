@@ -4,6 +4,7 @@ import { projects } from "./dataStorage";
 import { projectListSetter } from "./todoModule";
 import { DOMProjectAdder } from "./todoModule";
 import { deleteProject } from "./todoModule";
+import { addTask } from "./todoModule";
 
 
 console.log(JSON.parse(window.localStorage.getItem("projectnames")));
@@ -62,6 +63,25 @@ const currentTasks = document.createElement("div");
 currentTasks.className = "to-do-boxes";
 currentTaskContainer.appendChild(currentTasks);
 
+const addTaskContainer = document.createElement("div");
+addTaskContainer.id = "add-taskbar";
+
+const addTaskInput = document.createElement("input");
+addTaskInput.id = "task-input-bar";
+addTaskInput.placeholder = "Add a task to complete";
+addTaskContainer.appendChild(addTaskInput);
+
+const addTaskBtn = document.createElement("div");
+addTaskBtn.textContent = "+";
+addTaskBtn.id = "add-task-btn";
+addTaskContainer.appendChild(addTaskBtn);
+
+currentTasks.appendChild(addTaskContainer);
+const testTask = addTask('Finish To-Do Project');
+console.log(`testTask shows: ${testTask}`);
+currentTasks.appendChild(testTask);
+
+
 const currentTaskList = document.createElement("ul");
 currentTaskList.id = "current-tasks-ul";
 
@@ -69,17 +89,8 @@ const addTaskLi = document.createElement("li");
 addTaskLi.className = "add-task-li";
 addTaskLi.textContent = "";
 
-// const addTaskContainer = document.createElement("div");
-// addTaskContainer.className = "taskbar";
 
-// implement soon
-// const addTaskInput = document.createElement("input");
-// addTaskInput.placeholder = "Add a task to complete"
 
-const addTaskBtn = document.createElement("div");
-addTaskBtn.textContent = "+";
-addTaskBtn.id = "add-task-btn";
-currentTaskList.appendChild(addTaskBtn);
 
 // task details DOM
 
@@ -150,5 +161,10 @@ delBtnArr.forEach((e, i) => {
     window.localStorage.setItem("projectnames", JSON.stringify(projects));
   });
 });
+
+// testing
+
+const taskLineItem = createListItem('Test').projectBtns;
+// currentTaskContainer.appendChild(taskLineItem);
 
 export { body, projectsList };
