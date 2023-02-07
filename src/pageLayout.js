@@ -5,6 +5,7 @@ import { projectListSetter } from "./todoModule";
 import { DOMProjectAdder } from "./todoModule";
 import { deleteProject } from "./todoModule";
 import { addTask } from "./todoModule";
+import { editTaskDetails } from "./todoModule";
 
 
 console.log(JSON.parse(window.localStorage.getItem("projectnames")));
@@ -105,6 +106,11 @@ taskDetailsContainer.appendChild(taskDetailsTitle);
 const taskDetails = document.createElement("div");
 taskDetails.className = "to-do-boxes";
 taskDetailsContainer.appendChild(taskDetails);
+
+// const divTaskDetails = document.querySelector(".to-do-boxes");
+// console.log(`Testing selector: ${divTaskDetails}`);
+const testDetails = editTaskDetails();
+taskDetails.appendChild(testDetails);
 
 // add project to DOM
 addProjectButton.addEventListener("click", DOMProjectAdder);
