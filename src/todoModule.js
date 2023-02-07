@@ -2,6 +2,7 @@
 
 import { projects } from "./dataStorage";
 import { projectsList } from "./pageLayout";
+import format from "date-fns/format";
 
 // this function gets project name and stores as a string
 function addProject() {
@@ -101,28 +102,119 @@ function addTask(desc) {
   taskDesc.textContent = desc;
   const taskCheckBox = document.createElement("input");
   taskCheckBox.type = "checkbox";
-  taskContainer.appendChild(taskDesc);
-  taskContainer.appendChild(taskCheckBox);
-  
-  // taskContainer.appendChild(taskBtnsContainer);
+  const taskEditBtn = document.createElement("div");
+  taskEditBtn.className = "task-btns";
+  taskEditBtn.id = "task-edit-btn";
+  taskEditBtn.title = "Edit";
+  const taskDelBtn = document.createElement("div");
+  taskDelBtn.className = "task-btns";
+  taskDelBtn.id = "task-del-btn";
+  taskDelBtn.title = "Delete";
+  const taskBtnsContainer = document.createElement("div");
+  taskBtnsContainer.className = "task-btns-container";
 
+  taskContainer.appendChild(taskDesc);
+  taskBtnsContainer.appendChild(taskCheckBox);
+  // taskBtnsContainer.appendChild(taskEditBtn);
+  // taskBtnsContainer.appendChild(taskDelBtn);
+  taskContainer.appendChild(taskBtnsContainer);
   // get project name and create an editable board allowing user to add tasks
   // use checkboxes
   // design: static dimensions vs dynamic. dynamic for mobile responsiveness
-  // needs title: 'Present'
   // object needs to be created to host project to-do's
   // logic implementation separate from design
+
   return taskContainer;
 }
 
-// future to-do's
-function futureTasks() {
-  console.log(`future to-do's`);
-}
+// edit task details
+function editTaskDetails() {
+  // document.querySelector("#task-details > div")
+  const taskDetailsContainer = document.createElement("ul");
+  taskDetailsContainer.id = "details";
 
-// past to-do's
-function pastTasks() {
-  console.log(`past to-do's`);
+  const projectTitle = document.createElement("h3");
+  projectTitle.textContent = "Project";
+
+  const projectSelect = document.createElement("select");
+  projectSelect.id = "project-selector";
+  const defaultOptionValue = document.createElement("option");
+  defaultOptionValue.textContent = "None";
+  projectSelect.appendChild(defaultOptionValue);
+
+  projects.forEach((element) => {
+    console.log(`element: ${element}`);
+    const projectsInput = document.createElement("select");
+    projectsInput.id = "project-selector";
+    const optionValue = document.createElement("option");
+    optionValue.textContent = element;
+    projectSelect.appendChild(optionValue);
+  });
+
+  const dateTitle = document.createElement("h3");
+  dateTitle.textContent = "Date Due";
+  const dateInput = document.createElement("input");
+  dateInput.type = "date";
+
+  const priorityTitle = document.createElement("h3");
+  priorityTitle.textContent = "Task Priority";
+  const prioritySelect = document.createElement("select");
+  prioritySelect.id = "priority-selector";
+  const defaultPriority = document.createElement("option");
+  defaultPriority.textContent = "None";
+  const lowPriority = document.createElement("option");
+  lowPriority.textContent = "Low";
+  const medPriority = document.createElement("option");
+  medPriority.textContent = "Medium";
+  const highPriority = document.createElement("option");
+  highPriority.textContent = "High";
+  prioritySelect.appendChild(defaultPriority);
+  prioritySelect.appendChild(lowPriority);
+  prioritySelect.appendChild(medPriority);
+  prioritySelect.appendChild(highPriority);
+
+  const timeTitle = document.createElement("h3");
+  timeTitle.textContent = "Time Due";
+  const timeInput = document.createElement("input");
+  timeInput.type = "time";
+
+  const descTitle = document.createElement("h3");
+  descTitle.textContent = "Description";
+  const descInput = document.createElement("textarea");
+  descInput.id = "detail-desc";
+  descInput.placeholder = "Enter description.";
+
+  taskDetailsContainer.appendChild(projectTitle);
+  taskDetailsContainer.appendChild(projectSelect);
+  taskDetailsContainer.appendChild(dateTitle);
+  taskDetailsContainer.appendChild(dateInput);
+  taskDetailsContainer.appendChild(timeTitle);
+  taskDetailsContainer.appendChild(timeInput);
+  taskDetailsContainer.appendChild(priorityTitle);
+  taskDetailsContainer.appendChild(prioritySelect);
+  taskDetailsContainer.appendChild(descTitle);
+  taskDetailsContainer.appendChild(descInput);
+
+  function setSelectWidth() {
+    let width = 0;
+    for (let i = 0; i < projectSelect.options.length; i++) {
+      if (projectSelect.options[i].text.length > width) {
+        width = projectSelect.options[i].text.length;
+      }
+    }
+    projectSelect.style.width = width + 4 + "ch";
+
+    for (let i = 0; i < prioritySelect.options.length; i++) {
+      if (prioritySelect.options[i].text.length > width) {
+        width = prioritySelect.options[i].text.length;
+      }
+    }
+    prioritySelect.style.width = width + 4 + "ch";
+
+  }
+
+  window.addEventListener("load", setSelectWidth);
+  return taskDetailsContainer;
 }
 
 export {
@@ -132,4 +224,5 @@ export {
   DOMProjectAdder,
   deleteProject,
   addTask,
+  editTaskDetails,
 };
