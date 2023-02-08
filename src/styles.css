@@ -159,6 +159,33 @@ li {
   background: none;
 }
 
+#detail-btns {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1%;
+}
+
+#save-btn {
+  height: 24px;
+  width: 24px;
+  background-image: url("./images/save.svg");
+  background-size: 100% 100%;
+}
+
+#delete-btn {
+  height: 24px;
+  width: 24px;
+  background-image: url("./images/delete.svg");
+  background-size: 100% 100%;
+}
+
+#cancel-btn {
+  height: 24px;
+  width: 24px;
+  background-image: url("./images/cancel.svg");
+  background-size: 100% 100%;
+}
+
 .added-projects:hover #del-btn {
   background-image: url("./images/delete.svg");
   background-size: 100% 100%;
@@ -221,14 +248,21 @@ li.added-projects:hover {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  margin-left: 2%;
+  margin-right: 2%;
 }
 
 #details > h3 {
   color: hotpink;
 }
 
-select, input {
+select {
   width: auto;
+  box-sizing: border-box;
+}
+
+input[type="date"], input[type="time"] {
+  width: 120px;
   box-sizing: border-box;
 }
 
@@ -246,3 +280,4 @@ textarea#detail-desc {
   color: dodgerblue;
   padding-left: 2.5%;
 }
+
