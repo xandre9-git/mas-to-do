@@ -256,6 +256,11 @@ li.added-projects:hover {
   color: hotpink;
 }
 
+#detail-btns {
+  /* rebeccapurple */
+  filter: invert(24%) sepia(17%) saturate(6018%) hue-rotate(249deg) brightness(90%) contrast(93%);
+}
+
 select {
   width: auto;
   box-sizing: border-box;
