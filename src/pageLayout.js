@@ -7,9 +7,10 @@ import { deleteProject } from "./todoModule";
 import { addTask } from "./todoModule";
 import { editTaskDetails } from "./todoModule";
 
-
-console.log(JSON.parse(window.localStorage.getItem("projectnames")));
-if (JSON.parse(window.localStorage.getItem("projectnames")).length > 0) {
+console.log(`projects currently has: ${projects}`);
+console.log(`window.projects: ${window.projects}`);
+console.log(`json parse: ${JSON.parse(window.localStorage.getItem("projectnames"))}`);
+if (JSON.parse(window.localStorage.getItem("projectnames")) != null) {
   window.projects = JSON.parse(window.localStorage.getItem("projectnames"));
   console.log(`Projects array inside JSON parse: ${window.projects}`);
   console.log("JSON parse section fired.");
@@ -90,9 +91,6 @@ const addTaskLi = document.createElement("li");
 addTaskLi.className = "add-task-li";
 addTaskLi.textContent = "";
 
-
-
-
 // task details DOM
 
 const taskDetailsContainer = document.createElement("div");
@@ -107,8 +105,6 @@ const taskDetails = document.createElement("div");
 taskDetails.className = "to-do-boxes";
 taskDetailsContainer.appendChild(taskDetails);
 
-// const divTaskDetails = document.querySelector(".to-do-boxes");
-// console.log(`Testing selector: ${divTaskDetails}`);
 const testDetails = editTaskDetails();
 taskDetails.appendChild(testDetails);
 
@@ -116,9 +112,12 @@ taskDetails.appendChild(testDetails);
 addProjectButton.addEventListener("click", DOMProjectAdder);
 
 // for loop to add existing projects into projects section on DOM
-for (let i = 0; i < window.projects.length; i++) {
-  projectListSetter(projects[i], projectsList);
+if (window.projects != null) {
+  for (let i = 0; i < window.projects.length; i++) {
+    projectListSetter(projects[i], projectsList);
+  }
 }
+
 
 // appends
 projectsList.appendChild(addProjectButton);
