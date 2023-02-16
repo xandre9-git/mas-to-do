@@ -6,17 +6,27 @@ import { DOMProjectAdder } from "./todoModule";
 import { deleteProject } from "./todoModule";
 import { addTask } from "./todoModule";
 import { editTaskDetails } from "./todoModule";
+import { addToDo } from "./todoModule";
+import { Task } from "./todoModule";
+import { projectTasks } from "./dataStorage";
 
-console.log(`projects currently has: ${projects}`);
-console.log(`window.projects: ${window.projects}`);
-console.log(`json parse: ${JSON.parse(window.localStorage.getItem("projectnames"))}`);
-if (JSON.parse(window.localStorage.getItem("projectnames")) != null) {
-  window.projects = JSON.parse(window.localStorage.getItem("projectnames"));
-  console.log(`Projects array inside JSON parse: ${window.projects}`);
-  console.log("JSON parse section fired.");
-} else {
-  projects = [];
-}
+// PROJECT NAMES
+// Get the projectnames from local storage or use an empty array if null
+projects = JSON.parse(window.localStorage.getItem("projectnames")) || [];
+console.log(`projects array: ${projects}`);
+console.log(`Type of projects array: ${typeof projects}`);
+
+// PROJECT TASKS
+// Get the projectTasks from local storage or use a default object if null
+projectTasks = JSON.parse(window.localStorage.getItem("projectTasks")) || [
+  {
+    projectName: "Unnamed Project",
+    currentTasks: [],
+    completedTasks: [],
+  },
+];
+console.log("projectTasks array: ", projectTasks);
+console.log(`Type of projectTasks array: ${typeof projectTasks}`);
 
 // This is for the DOM
 
@@ -45,7 +55,7 @@ const addProjectButton = document.createElement("li");
 addProjectButton.className = "add-projects";
 addProjectButton.textContent = "+ Add Project";
 
-const todoBoardsContainer = document.createElement('div');
+const todoBoardsContainer = document.createElement("div");
 todoBoardsContainer.id = "to-dos-container";
 
 const currentContainer = document.createElement("div");
@@ -54,7 +64,7 @@ currentContainer.className = "task-boxes-container";
 // current tasks DOM
 
 const currentTaskContainer = document.createElement("div");
-currentTaskContainer.id = "current-tasks"
+currentTaskContainer.id = "current-tasks";
 
 const currentTasksTitle = document.createElement("h2");
 currentTasksTitle.className = "to-do-title";
@@ -65,7 +75,7 @@ const currentTasks = document.createElement("div");
 currentTasks.className = "to-do-boxes";
 currentTaskContainer.appendChild(currentTasks);
 
-const addTaskContainer = document.createElement("div");
+const addTaskContainer = document.createElement("form");
 addTaskContainer.id = "add-taskbar";
 
 const addTaskInput = document.createElement("input");
@@ -73,15 +83,38 @@ addTaskInput.id = "task-input-bar";
 addTaskInput.placeholder = "Add a task to complete";
 addTaskContainer.appendChild(addTaskInput);
 
-const addTaskBtn = document.createElement("div");
+// add task button
+const addTaskBtn = document.createElement("button");
 addTaskBtn.textContent = "+";
+addTaskBtn.type = "submit";
 addTaskBtn.id = "add-task-btn";
 addTaskContainer.appendChild(addTaskBtn);
 
+// Add a task to the current project
+addTaskBtn.addEventListener("click", (e) => {
+  // Get the input value
+  let taskInput = document.getElementById("task-input-bar").value;
+  // Create a new task object
+  const newTaskItem = new Task(taskInput, 0);
+  // Append the task to the current tasks list
+  currentTasks.appendChild(addTask(newTaskItem.title));
+  // location.reload();
+  localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
+  e.preventDefault();
+});
+
 currentTasks.appendChild(addTaskContainer);
-const testTask = addTask('Finish To-Do Project');
-console.log(`testTask shows: ${testTask}`);
-currentTasks.appendChild(testTask);
+
+// projectTasks[0].currentTasks.pop();
+
+projectTasks?.forEach((task) => {
+  task.currentTasks.forEach((currentTask) => {
+    console.log(`currentTask: ${currentTask.title}`);
+    currentTasks.appendChild(addTask(currentTask.title));
+    // location.reload();
+  });
+  // currentTasks.appendChild(addTask(task.currentTasks[0].title));
+});
 
 
 const currentTaskList = document.createElement("ul");
@@ -111,49 +144,48 @@ taskDetails.appendChild(testDetails);
 // add project to DOM
 addProjectButton.addEventListener("click", DOMProjectAdder);
 
-// for loop to add existing projects into projects section on DOM
-if (window.projects != null) {
-  for (let i = 0; i < window.projects.length; i++) {
-    projectListSetter(projects[i], projectsList);
+// forEach to add existing projects into projects section on DOM
+projects?.forEach((project) => {
+  projectListSetter(project, projectsList);
+});
+
+// appends
+// Create a function to append multiple elements to a parent element
+function appendElements(parent, ...children) {
+  for (let child of children) {
+    parent.appendChild(child);
   }
 }
 
-
-// appends
-projectsList.appendChild(addProjectButton);
-projectsContainer.appendChild(projectsList);
-body.appendChild(topBar);
-topBar.appendChild(appTitle);
-body.appendChild(leftSideBar);
-
-currentContainer.appendChild(currentTaskContainer);
-currentContainer.appendChild(taskDetailsContainer);
-
-todoBoardsContainer.appendChild(currentContainer);
-body.appendChild(todoBoardsContainer);
-
-leftSideBar.appendChild(projectsTitle);
-leftSideBar.appendChild(projectsContainer);
+// Use the function to refactor the code
+appendElements(projectsList, addProjectButton);
+appendElements(projectsContainer, projectsList);
+appendElements(topBar, appTitle);
+appendElements(body, topBar, leftSideBar, todoBoardsContainer);
+appendElements(currentContainer, currentTaskContainer, taskDetailsContainer);
+appendElements(todoBoardsContainer, currentContainer);
+appendElements(leftSideBar, projectsTitle, projectsContainer);
 
 // edit project name
 const editBtn = document.querySelectorAll("#edit-btn");
 const editBtnArr = Array.from(editBtn);
 editBtnArr.forEach((e, i) => {
-  e.addEventListener("click", function test(){
-    console.log(`editBtnArr[i]: ${editBtnArr[i].closest(".added-projects").id}`);
+  e.addEventListener("click", function test() {
+    console.log(
+      `editBtnArr[i]: ${editBtnArr[i].closest(".added-projects").id}`
+    );
     const index = projects.indexOf(editBtnArr[i].closest(".added-projects").id);
     console.log(index);
-    let editName = prompt('Edit name:');
+    let editName = prompt("Edit name:");
     if (editName != null && !projects.includes(editName)) {
-      console.log('This if statement executed.')
+      console.log("This if statement executed.");
       projects[index] = editName;
       console.log(projects);
-      window.localStorage.setItem("projectnames", JSON.stringify(projects))    
+      window.localStorage.setItem("projectnames", JSON.stringify(projects));
     }
     document.location.reload();
-  })
-})
-
+  });
+});
 
 // delete project
 const delBtn = document.querySelectorAll("#del-btn");
@@ -167,9 +199,13 @@ delBtnArr.forEach((e, i) => {
   });
 });
 
-// testing
-
-const taskLineItem = createListItem('Test').projectBtns;
-// currentTaskContainer.appendChild(taskLineItem);
-
-export { body, projectsList };
+export {
+  body,
+  projectsList,
+  currentContainer,
+  currentTaskContainer,
+  currentTasksTitle,
+  currentTasks,
+  addTaskContainer,
+  addTaskInput,
+};
