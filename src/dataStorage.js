@@ -1,51 +1,51 @@
-import { addTask } from "./todoModule";
-import { createListItem } from "./todoModule";
+// GLOBAL VARIABLES
 
-// project names array
-let projects = JSON.parse(window.localStorage.getItem("projectnames"));
+// PROJECT LIST
 
-// create global reference to array
-window.projects = projects;
+// Initialize an empty array for projects
+let projects = [];
 
-// task object creator
-
-function Task(title, desc, dateDue, priority, project) {
-  this.title = title;
-  this.desc = desc;
-  this.dateDue = dateDue;
-  this.priority = priority;
-  this.project = project;
-  this.commands = function commands(){
-    console.log(`Title: ${this.title}\nDescription: ${this.desc}\nDate Due: ${this.dateDue}\nPriority: ${this.priority}\nProject: ${this.project}`);
-  }
-}
-
-// example task
-
-const practiceProgramming = new Task(
-  "Practice programming",
-  "Reinforce prior learned material and learn more new concepts",
-  new Date(2023, 1, 4),
-  "High",
-  "Odin"
-)
-console.log(`${practiceProgramming.commands()}`);
-
-// let variable = addTask();
-// console.log(`This shows: ${variable}`);
-
-// to-do array
-// will store objects as items
-let toDos = [];
-
-
-
+// Export the projects array
 export { projects };
 
-// // Object Constructor
-// function Projects(name) {
-//   this.name = name;
-// }
+// PROJECT TASKS
 
-// // Example Project
-// const odinProject = new Projects('The Odin Project');
+// Initialize an array for project tasks with a default object
+let projectTasks = [
+  {
+    projectName: "Unnamed Project",
+    currentTasks: [],
+    completedTasks: [],
+  },
+];
+
+// Export the projectTasks array
+export { projectTasks };
+
+// example project tasks object (not exported)
+const exampleProjectTasks = [
+  {
+    projectName: "Odin",
+    currentTasks: [
+      {
+        id: 1,
+        title: "Finish To-Do Project",
+        desc: "Complete To-Do Project by the end of the month and submit to Github.",
+        dateDue: new Date(2023, 1, 4),
+        timeDue: "",
+        priority: "High",
+      },
+    ],
+    completedTasks: [
+      {
+        id: "",
+        title: "",
+        desc: "",
+        dateDue: new Date(),
+        timeDue: "",
+        priority: "None",
+        dateCompleted: new Date(),
+      },
+    ],
+  },
+];
