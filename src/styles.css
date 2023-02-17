@@ -217,7 +217,7 @@ li.added-projects:hover {
   /* text-decoration: none; */
 }
 
-#tasks {
+.task {
   display: flex;
   justify-content: space-between;
   margin-left: 2.5%;
