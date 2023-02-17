@@ -1,8 +1,10 @@
 // TO DO MODULES
 
 import { projects } from "./dataStorage";
+import { projectTasks } from "./dataStorage";
 import { projectsList } from "./pageLayout";
 import format from "date-fns/format";
+import { currentTasks } from "./pageLayout";
 
 // this function gets project name and stores as a string
 function addProject() {
@@ -75,21 +77,26 @@ function deleteProject(projectname, arr) {
 
 // current to-do's
 function addTask(desc) {
-  const taskContainer = document.createElement("ul");
-  taskContainer.id = "tasks";
+  if (desc != undefined && desc != "") {
 
-  const taskDesc = document.createElement("li");
-  taskDesc.className = "checklist-task-item";
-  taskDesc.textContent = desc;
-
-  const taskCheckBox = createCheckbox();
-  const taskBtnsContainer = createTaskBtnsContainer();
-
-  taskContainer.appendChild(taskDesc);
-  taskBtnsContainer.appendChild(taskCheckBox);
-  taskContainer.appendChild(taskBtnsContainer);
-
-  return taskContainer;
+    console.log(`desc: ${desc}`);
+    const taskContainer = document.createElement("div");
+    taskContainer.className = "task";
+  
+    const taskDesc = document.createElement("div");
+    taskDesc.className = "checklist-task-item";
+    taskDesc.textContent = desc;
+  
+    const taskCheckBox = createCheckbox();
+    const taskBtnsContainer = createTaskBtnsContainer();
+  
+    taskContainer.appendChild(taskDesc);
+    taskBtnsContainer.appendChild(taskCheckBox);
+    taskContainer.appendChild(taskBtnsContainer);
+  
+    return taskContainer;
+  }
+  
 }
 
 function createCheckbox() {
@@ -102,6 +109,52 @@ function createTaskBtnsContainer() {
   const taskBtnsContainer = document.createElement("div");
   taskBtnsContainer.className = "task-btns-container";
   return taskBtnsContainer;
+}
+
+// task object creator
+function Task(title, projectIndex) {
+  if (title !== "") {
+    let currentIds = [];
+    let completedIds = [];
+
+    // Use the projectIndex to get the current and completed tasks of the project
+    projectTasks[projectIndex].currentTasks.forEach((task) => {
+      currentIds.push(task.id);
+    });
+
+    projectTasks[projectIndex].completedTasks.forEach((task) => {
+      completedIds.push(task.id);
+    });
+
+    let newId = 1;
+    while (currentIds.includes(newId) || completedIds.includes(newId)) {
+      newId++;
+    }
+
+    let newTask = {
+      id: newId,
+      title: title,
+      desc: "",
+      dateDue: new Date(),
+      timeDue: "",
+      priority: "None",
+    };
+
+    // Use the projectIndex to push the new task to the correct project
+    projectTasks[projectIndex].currentTasks.push(newTask);
+    window.localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
+
+    return newTask;
+  }
+}
+
+function TaskDetails(id, project, dateDue, timeDue, priority, desc) {
+  this.id = id;
+  this.project = project;
+  this.dateDue = dateDue;
+  this.timeDue = timeDue;
+  this.priority = priority;
+  this.desc = desc;
 }
 
 // edit task details
@@ -139,7 +192,7 @@ function editTaskDetails() {
       type: "textarea",
       id: "detail-desc",
       attributes: { placeholder: "Enter description." },
-    }
+    },
   ];
 
   for (const { type, text, id, options, attributes, title } of elements) {
@@ -189,7 +242,6 @@ function editTaskDetails() {
     taskDetailsContainer.appendChild(detailBtnsContainer);
   }
 
-
   const setSelectWidth = () => {
     const setWidth = (select) => {
       let width = 0;
@@ -216,4 +268,5 @@ export {
   deleteProject,
   addTask,
   editTaskDetails,
+  Task,
 };
