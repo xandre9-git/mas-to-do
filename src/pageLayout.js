@@ -94,13 +94,15 @@ addTaskContainer.appendChild(addTaskBtn);
 addTaskBtn.addEventListener("click", (e) => {
   // Get the input value
   let taskInput = document.getElementById("task-input-bar").value;
-  // Create a new task object
-  const newTaskItem = new Task(taskInput, 0);
-  // Append the task to the current tasks list
-  currentTasks.appendChild(addTask(newTaskItem.title));
-  // location.reload();
-  localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
-  e.preventDefault();
+  if (taskInput != "") {
+    // Create a new task object
+    const newTaskItem = new Task(taskInput, 0);
+    // Append the task to the current tasks list
+    currentTasks.appendChild(addTask(newTaskItem.title));
+    // location.reload();
+    localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
+    e.preventDefault();
+  }
 });
 
 currentTasks.appendChild(addTaskContainer);
@@ -115,7 +117,6 @@ projectTasks?.forEach((task) => {
   });
   // currentTasks.appendChild(addTask(task.currentTasks[0].title));
 });
-
 
 const currentTaskList = document.createElement("ul");
 currentTaskList.id = "current-tasks-ul";
