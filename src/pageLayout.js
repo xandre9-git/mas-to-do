@@ -200,6 +200,12 @@ delBtnArr.forEach((e, i) => {
   });
 });
 
+// checkbox completion function
+// console.log(`document.querySelectorAll('.task-checkbox'): ${document.querySelectorAll('.task-checkbox')}`);
+// const checkboxNodes = document.querySelectorAll(".task-checkbox");
+// const checkboxArr = Array.from(checkboxNodes);
+// console.log(`checkboxArr: ${checkboxArr[0]}`);
+
 export {
   body,
   projectsList,
