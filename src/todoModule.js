@@ -77,39 +77,42 @@ function deleteProject(projectname, arr) {
 
 // current to-do's
 function addTask(desc) {
-  if (desc != undefined && desc != "") {
+  if (!desc) return; // check for falsy values
 
-    console.log(`desc: ${desc}`);
-    const taskContainer = document.createElement("div");
-    taskContainer.className = "task";
-  
-    const taskDesc = document.createElement("div");
-    taskDesc.className = "checklist-task-item";
-    taskDesc.textContent = desc;
-  
-    const taskCheckBox = createCheckbox();
-    const taskBtnsContainer = createTaskBtnsContainer();
-  
-    taskContainer.appendChild(taskDesc);
-    taskBtnsContainer.appendChild(taskCheckBox);
-    taskContainer.appendChild(taskBtnsContainer);
-  
-    return taskContainer;
-  }
-  
+  const taskContainer = createTaskContainer(desc); // extract function
+  const taskCheckBox = createCheckbox();
+  taskCheckBox.className = "task-checkbox";
+  taskCheckBox.addEventListener("click", completeTask); // extract function
+  taskContainer.appendChild(taskCheckBox);
+  return taskContainer;
+}
+
+function createTaskContainer(desc) {
+  const taskContainer = document.createElement("div");
+  taskContainer.className = "task";
+  const taskDesc = document.createElement("div");
+  taskDesc.className = "checklist-task-item";
+  taskDesc.textContent = desc;
+  taskDesc.contentEditable = true;
+  taskContainer.appendChild(taskDesc);
+  return taskContainer;
+}
+
+function completeTask() {
+  let text = this.parentNode.querySelector(".checklist-task-item");
+  if (this.checked) {
+    text.style.setProperty("text-decoration", "line-through");
+    } else {
+    text.style.removeProperty("text-decoration");;
+    }
 }
 
 function createCheckbox() {
-  const taskCheckBox = document.createElement("input");
-  taskCheckBox.type = "checkbox";
-  return taskCheckBox;
+  const checkbox = document.createElement("input"); // rename variable
+  checkbox.type = "checkbox";
+  return checkbox;
 }
 
-function createTaskBtnsContainer() {
-  const taskBtnsContainer = document.createElement("div");
-  taskBtnsContainer.className = "task-btns-container";
-  return taskBtnsContainer;
-}
 
 // task object creator
 function Task(title, projectIndex) {
@@ -147,6 +150,8 @@ function Task(title, projectIndex) {
     return newTask;
   }
 }
+
+
 
 function TaskDetails(id, project, dateDue, timeDue, priority, desc) {
   this.id = id;
