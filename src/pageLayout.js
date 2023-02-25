@@ -1,12 +1,9 @@
-import { addProject } from "./todoModule";
-import { createListItem } from "./todoModule";
 import { projects } from "./dataStorage";
 import { projectListSetter } from "./todoModule";
 import { DOMProjectAdder } from "./todoModule";
 import { deleteProject } from "./todoModule";
 import { addTask } from "./todoModule";
 import { editTaskDetails } from "./todoModule";
-import { addToDo } from "./todoModule";
 import { Task } from "./todoModule";
 import { projectTasks } from "./dataStorage";
 
@@ -107,16 +104,33 @@ addTaskBtn.addEventListener("click", (e) => {
 
 currentTasks.appendChild(addTaskContainer);
 
-// projectTasks[0].currentTasks.pop();
+
+
+// SHOW ALL TASKS ON PAGE
 
 projectTasks?.forEach((task) => {
   task.currentTasks.forEach((currentTask) => {
     console.log(`currentTask: ${currentTask.title}`);
     currentTasks.appendChild(addTask(currentTask.title));
-    // location.reload();
   });
-  // currentTasks.appendChild(addTask(task.currentTasks[0].title));
+  task.completedTasks.forEach((completedTask) => {
+    if (Array.isArray(completedTask)) {
+      // if the completedTask is an array, loop through its items
+      completedTask.forEach((subtask) => {
+        console.log(`completedTask (subtask): ${subtask.title}`);
+        currentTasks.appendChild(addTask(subtask.title, true));
+      });
+    } else {
+      // if the completedTask is an object, add it as a single task
+      console.log(`completedTask: ${completedTask.title}`);
+      currentTasks.appendChild(addTask(completedTask.title, true));
+    }
+  });
 });
+
+
+
+
 
 const currentTaskList = document.createElement("ul");
 currentTaskList.id = "current-tasks-ul";
@@ -200,11 +214,6 @@ delBtnArr.forEach((e, i) => {
   });
 });
 
-// checkbox completion function
-// console.log(`document.querySelectorAll('.task-checkbox'): ${document.querySelectorAll('.task-checkbox')}`);
-// const checkboxNodes = document.querySelectorAll(".task-checkbox");
-// const checkboxArr = Array.from(checkboxNodes);
-// console.log(`checkboxArr: ${checkboxArr[0]}`);
 
 export {
   body,
