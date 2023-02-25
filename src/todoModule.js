@@ -137,8 +137,8 @@ function completeTask() {
 
       // Match the taskId with the index of the task in the currentTasks array
       let taskIndex = projectTasks[0].currentTasks.findIndex((task) => {
-        console.log(`task: ${task.id}`);
-        return taskId == task.id;
+        console.log(`task.title: ${task.title}`);
+        return taskId == task.title;
       });
 
       // Remove the task from the currentTasks array
