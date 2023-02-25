@@ -4,7 +4,6 @@ import { projects } from "./dataStorage";
 import { projectTasks } from "./dataStorage";
 import { projectsList } from "./pageLayout";
 import format from "date-fns/format";
-import { currentTasks } from "./pageLayout";
 
 // this function gets project name and stores as a string
 function addProject() {
@@ -76,14 +75,31 @@ function deleteProject(projectname, arr) {
 // to do boards
 
 // current to-do's
-function addTask(desc) {
+function addTask(desc, isCompleted) {
   if (!desc) return; // check for falsy values
 
   const taskContainer = createTaskContainer(desc); // extract function
+  taskContainer.classList.add("checklist-task-item"); // add class to task container
   const taskCheckBox = createCheckbox();
   taskCheckBox.className = "task-checkbox";
-  taskCheckBox.addEventListener("click", completeTask); // extract function
-  taskContainer.appendChild(taskCheckBox);
+  taskCheckBox.checked = isCompleted; // set checkbox to check if task is completed
+  // bind this to completeTask function when used as event handler
+  // document.querySelector('#checkbox-id').addEventListener('click', completeTask.bind(this));
+  taskCheckBox.addEventListener("change", function () {
+    if (this.checked) {
+      console.log("test");
+      completeTask.bind(this)(); // call completeTask after binding this
+    } else {
+      unCompleteTask.bind(this)(); // call unCompleteTask after binding this
+    }
+  }); // extract function
+  taskContainer.appendChild(taskCheckBox); // insert checkbox after task container
+
+  if (isCompleted) {
+    taskContainer.classList.add("completed");
+    taskContainer.style.textDecoration = "line-through";
+  }
+
   return taskContainer;
 }
 
@@ -99,12 +115,79 @@ function createTaskContainer(desc) {
 }
 
 function completeTask() {
+  // test this function
+  console.log(`Testing to see if it works.`);
+
+  // Get the description of the task that was just checked
   let text = this.parentNode.querySelector(".checklist-task-item");
+
+  // If the checkbox is checked:
   if (this.checked) {
+    // Add a line through the task description to indicate that it's been completed
     text.style.setProperty("text-decoration", "line-through");
-    } else {
-    text.style.removeProperty("text-decoration");;
-    }
+
+    // Define a new function called moveTaskToCompleted, and bind it to the checkbox element
+    (function moveTaskToCompleted() {
+      // Log a message to the console
+      console.log(`Task completed.`);
+
+      // Get the ID of the task from the value of the checkbox
+      let taskId = text.textContent;
+      console.log(`taskId: ${taskId}`);
+
+      // Match the taskId with the index of the task in the currentTasks array
+      let taskIndex = projectTasks[0].currentTasks.findIndex((task) => {
+        console.log(`task: ${task.id}`);
+        return taskId == task.id;
+      });
+
+      // Remove the task from the currentTasks array
+      let [task] = projectTasks[0].currentTasks.splice(taskIndex, 1);
+
+      // Add a DateCompleted property to the task object
+      task.DateCompleted = new Date();
+
+      // Add the task to the completedTasks array
+      projectTasks[0].completedTasks.push(...[task]);
+
+      // Save the updated projectTasks array to local storage
+      localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
+    }.bind(this)());
+
+    // If the checkbox is unchecked:
+  } else {
+    // Remove the line-through from the task description
+    text.style.removeProperty("text-decoration");
+  }
+};
+
+function unCompleteTask() {
+  // test this function
+
+  let text = this.parentNode.querySelector(".checklist-task-item");
+  console.log(`text from unCompleteTask: ${text.textContent}`);
+  if (!this.checked) {
+    text.style.removeProperty("text-decoration");
+    // use regular function expression instead of arrow function
+    (function moveTaskToCurrent() {
+      console.log(`Task uncompleted.`);
+      // get the id of the task from checkbox value
+      let taskId = this.value;
+      // find the index of task in completedTasks array
+      let taskIndex = projectTasks[0].completedTasks.findIndex(
+        (task) => task.id === taskId
+      );
+      // remove task from completedTasks array
+      let task = projectTasks[0].completedTasks.splice(taskIndex, 1);
+      // delete dateCompleted property from task object
+      delete task.DateCompleted;
+      //push task to currentTasks array
+      projectTasks[0].currentTasks.push(task);
+      // localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
+    }.call(this)); // use call method to bind this value
+  } else {
+    text.style.setProperty("text-decoration", "line-through");
+  }
 }
 
 function createCheckbox() {
@@ -112,7 +195,6 @@ function createCheckbox() {
   checkbox.type = "checkbox";
   return checkbox;
 }
-
 
 // task object creator
 function Task(title, projectIndex) {
@@ -150,8 +232,6 @@ function Task(title, projectIndex) {
     return newTask;
   }
 }
-
-
 
 function TaskDetails(id, project, dateDue, timeDue, priority, desc) {
   this.id = id;
