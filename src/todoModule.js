@@ -23,27 +23,22 @@ function projectListSetter(str, node) {
 
 // this function creates the list item on the DOM
 function createListItem(listName) {
-  // create project button container
   const projectBtns = document.createElement("div");
   projectBtns.className = "project-btns-container";
 
-  // create edit button
   const projectEditBtn = document.createElement("div");
   projectEditBtn.className = "project-btns filter-white";
   projectEditBtn.id = "edit-btn";
   projectEditBtn.title = "Edit";
 
-  // create delete button
   const projectDelBtn = document.createElement("div");
   projectDelBtn.className = "project-btns filter-white";
   projectDelBtn.id = "del-btn";
   projectDelBtn.title = "Delete";
 
-  // append elements
   projectBtns.appendChild(projectEditBtn);
   projectBtns.appendChild(projectDelBtn);
 
-  // create list item
   const listItem = document.createElement("li");
   listItem.textContent = listName;
   listItem.appendChild(projectBtns);
@@ -83,16 +78,13 @@ function addTask(desc, isCompleted) {
   const taskCheckBox = createCheckbox();
   taskCheckBox.className = "task-checkbox";
   taskCheckBox.checked = isCompleted; // set checkbox to check if task is completed
-  // bind this to completeTask function when used as event handler
-  // document.querySelector('#checkbox-id').addEventListener('click', completeTask.bind(this));
   taskCheckBox.addEventListener("change", function () {
     if (this.checked) {
-      console.log("test");
       completeTask.bind(this)(); // call completeTask after binding this
     } else {
       unCompleteTask.bind(this)(); // call unCompleteTask after binding this
     }
-  }); // extract function
+  }); // add event listener to checkbox
   taskContainer.appendChild(taskCheckBox); // insert checkbox after task container
 
   if (isCompleted) {
@@ -115,29 +107,21 @@ function createTaskContainer(desc) {
 }
 
 function completeTask() {
-  // test this function
-  console.log(`Testing to see if it works.`);
-
   // Get the description of the task that was just checked
-  let text = this.parentNode.querySelector(".checklist-task-item");
+  let taskDescription = this.parentNode.querySelector(".checklist-task-item");
 
   // If the checkbox is checked:
   if (this.checked) {
     // Add a line through the task description to indicate that it's been completed
-    text.style.setProperty("text-decoration", "line-through");
+    taskDescription.style.setProperty("text-decoration", "line-through");
 
     // Define a new function called moveTaskToCompleted, and bind it to the checkbox element
     (function moveTaskToCompleted() {
-      // Log a message to the console
-      console.log(`Task completed.`);
-
       // Get the ID of the task from the value of the checkbox
-      let taskId = text.textContent;
-      console.log(`taskId: ${taskId}`);
+      let taskId = taskDescription.textContent;
 
       // Match the taskId with the index of the task in the currentTasks array
       let taskIndex = projectTasks[0].currentTasks.findIndex((task) => {
-        console.log(`task.title: ${task.title}`);
         return taskId == task.title;
       });
 
@@ -157,35 +141,49 @@ function completeTask() {
     // If the checkbox is unchecked:
   } else {
     // Remove the line-through from the task description
-    text.style.removeProperty("text-decoration");
+    taskDescription.style.removeProperty("text-decoration");
   }
-};
+}
 
 function unCompleteTask() {
-  // test this function
-
+  // Get the description of the task that was just unchecked
   let text = this.parentNode.querySelector(".checklist-task-item");
-  console.log(`text from unCompleteTask: ${text.textContent}`);
+
+  // If the checkbox is not checked:
   if (!this.checked) {
+    // Remove the line-through from the task description
     text.style.removeProperty("text-decoration");
-    // use regular function expression instead of arrow function
-    (function moveTaskToCurrent() {
-      console.log(`Task uncompleted.`);
-      // get the id of the task from checkbox value
-      let taskId = this.value;
-      // find the index of task in completedTasks array
-      let taskIndex = projectTasks[0].completedTasks.findIndex(
-        (task) => task.id === taskId
-      );
-      // remove task from completedTasks array
-      let task = projectTasks[0].completedTasks.splice(taskIndex, 1);
-      // delete dateCompleted property from task object
+    location.reload();
+
+    // Define a new function called moveTaskToCurrent, and bind it to the checkbox element
+    function moveTaskToCurrent() {
+      // Get the ID of the task from the text content of the task description
+      let taskId = text.textContent;
+
+      // Match the taskId with the title of the task in the completedTasks array
+      let taskIndex = projectTasks[0].completedTasks.findIndex((task) => {
+        return task.title == taskId;
+      });
+
+      // Remove the task from the completedTasks array
+      let [task] = projectTasks[0].completedTasks.splice(taskIndex, 1);
+
+      // Delete the DateCompleted property from the task object
       delete task.DateCompleted;
-      //push task to currentTasks array
+
+      // Add the task to the currentTasks array
       projectTasks[0].currentTasks.push(task);
-      // localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
-    }.call(this)); // use call method to bind this value
+
+      // Save the updated projectTasks array to local storage
+      localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
+    }
+
+    // Call the moveTaskToCurrent function
+    moveTaskToCurrent.call(this);
+
+    // If the checkbox is checked:
   } else {
+    // Add a line through the task description to indicate that it's still incomplete
     text.style.setProperty("text-decoration", "line-through");
   }
 }
@@ -202,7 +200,7 @@ function Task(title, projectIndex) {
     let currentIds = [];
     let completedIds = [];
 
-    // Use the projectIndex to get the current and completed tasks of the project
+    // Get the current and completed tasks of the project
     projectTasks[projectIndex].currentTasks.forEach((task) => {
       currentIds.push(task.id);
     });
@@ -211,6 +209,7 @@ function Task(title, projectIndex) {
       completedIds.push(task.id);
     });
 
+    // Find a unique id for the new task
     let newId = 1;
     while (currentIds.includes(newId) || completedIds.includes(newId)) {
       newId++;
@@ -225,7 +224,7 @@ function Task(title, projectIndex) {
       priority: "None",
     };
 
-    // Use the projectIndex to push the new task to the correct project
+    // Push the new task to the correct project
     projectTasks[projectIndex].currentTasks.push(newTask);
     window.localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
 
@@ -243,6 +242,7 @@ function TaskDetails(id, project, dateDue, timeDue, priority, desc) {
 }
 
 // edit task details
+
 function editTaskDetails() {
   const taskDetailsContainer = document.createElement("ul");
   taskDetailsContainer.id = "details";
@@ -329,13 +329,13 @@ function editTaskDetails() {
 
   const setSelectWidth = () => {
     const setWidth = (select) => {
-      let width = 0;
+      let maxTextLength = 0;
       for (let i = 0; i < select.options.length; i++) {
-        if (select.options[i].text.length > width) {
-          width = select.options[i].text.length;
+        if (select.options[i].text.length > maxTextLength) {
+          maxTextLength = select.options[i].text.length;
         }
       }
-      select.style.width = width + 4 + "ch";
+      select.style.width = maxTextLength + 4 + "ch";
     };
     setWidth(taskDetailsContainer.querySelector("#project-selector"));
     setWidth(taskDetailsContainer.querySelector("#priority-selector"));
