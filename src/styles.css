@@ -286,13 +286,5 @@ textarea#detail-desc {
   padding-left: 2.5%;
 }
 
-.checklist-task-item {
-  display: flex;
-  align-items: center;
-}
-
-.task-checkbox {
-  margin-left: auto;
-}
 
 
