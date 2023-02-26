@@ -1,15 +1,17 @@
-// TO DO MODULES
+// MODULES
 
 import { projects } from "./dataStorage";
 import { projectTasks } from "./dataStorage";
 import { projectsList } from "./pageLayout";
 import format from "date-fns/format";
 
+// ADD PROJECT
 // this function gets project name and stores as a string
 function addProject() {
   return prompt("Enter name of project:");
 }
 
+// PROJECT LIST SETTER
 // this function takes string of project name, gives it a class name, an id, checks that it is not empty, and prepends it to the desired node
 function projectListSetter(str, node) {
   let project = createListItem(str);
@@ -21,7 +23,8 @@ function projectListSetter(str, node) {
   }
 }
 
-// this function creates the list item on the DOM
+// CREATE PROJECT LIST ITEMS
+// this function creates project list items
 function createListItem(listName) {
   const projectBtns = document.createElement("div");
   projectBtns.className = "project-btns-container";
@@ -46,7 +49,15 @@ function createListItem(listName) {
   return listItem;
 }
 
-// this function ties it all together
+// EDIT TASK BUTTON
+function createEditButton() {
+  const editBtn = document.createElement("div");
+  editBtn.className = "task-edit-btn";
+  return editBtn;
+}
+
+// DOM PROJECT ADDER
+// this function ties addProject() and projectListSetter() together
 function DOMProjectAdder() {
   let res = addProject();
   if (res != null && !projects.includes(res)) {
@@ -59,7 +70,7 @@ function DOMProjectAdder() {
   return projectListSetter;
 }
 
-// delete project function
+// DELETE PROJECT
 function deleteProject(projectname, arr) {
   const projectIndex = arr.indexOf(projectname);
   arr.splice(projectIndex, 1);
@@ -67,14 +78,16 @@ function deleteProject(projectname, arr) {
   return arr;
 }
 
-// to do boards
+// TO DO BOARD MODULES
 
-// current to-do's
+// ADD TASK MODULE
+// this function adds a task to the Tasks panel
 function addTask(desc, isCompleted) {
   if (!desc) return; // check for falsy values
 
   const taskContainer = createTaskContainer(desc); // extract function
   taskContainer.classList.add("checklist-task-item"); // add class to task container
+  const editBtn = createEditButton();
   const taskCheckBox = createCheckbox();
   taskCheckBox.className = "task-checkbox";
   taskCheckBox.checked = isCompleted; // set checkbox to check if task is completed
@@ -85,7 +98,12 @@ function addTask(desc, isCompleted) {
       unCompleteTask.bind(this)(); // call unCompleteTask after binding this
     }
   }); // add event listener to checkbox
-  taskContainer.appendChild(taskCheckBox); // insert checkbox after task container
+    // insert edit button before checkbox
+  const editAndCheckBoxContainer = document.createElement("div");
+  editAndCheckBoxContainer.className = "edit-and-checkbox-container";
+  editAndCheckBoxContainer.appendChild(editBtn);
+  editAndCheckBoxContainer.appendChild(taskCheckBox);
+  taskContainer.appendChild(editAndCheckBoxContainer);
 
   if (isCompleted) {
     taskContainer.classList.add("completed");
@@ -95,26 +113,34 @@ function addTask(desc, isCompleted) {
   return taskContainer;
 }
 
+// TASKS
+
+// CREATE TASK CONTAINER
+// This function creates a div element with the class "task" and is used to contain the task description and checkbox
 function createTaskContainer(desc) {
   const taskContainer = document.createElement("div");
   taskContainer.className = "task";
   const taskDesc = document.createElement("div");
   taskDesc.className = "checklist-task-item";
   taskDesc.textContent = desc;
-  taskDesc.contentEditable = true;
+  // taskDesc.contentEditable = true;
   taskContainer.appendChild(taskDesc);
   return taskContainer;
 }
 
+// COMPLETE TASK
+// This function is called when the checkbox is checked
 function completeTask() {
   // Get the description of the task that was just checked
-  let taskDescription = this.parentNode.querySelector(".checklist-task-item");
+  let taskDescription = this.parentNode.parentNode.firstChild;
+  console.log(`taskDescription: ${taskDescription}`);
 
   // If the checkbox is checked:
   if (this.checked) {
     // Add a line through the task description to indicate that it's been completed
     taskDescription.style.setProperty("text-decoration", "line-through");
-
+    location.reload();
+    
     // Define a new function called moveTaskToCompleted, and bind it to the checkbox element
     (function moveTaskToCompleted() {
       // Get the ID of the task from the value of the checkbox
@@ -145,9 +171,11 @@ function completeTask() {
   }
 }
 
+// UN-COMPLETE TASK
+// This function is called when a task is unchecked
 function unCompleteTask() {
   // Get the description of the task that was just unchecked
-  let text = this.parentNode.querySelector(".checklist-task-item");
+  let text = this.parentNode.parentNode.firstChild;
 
   // If the checkbox is not checked:
   if (!this.checked) {
@@ -188,13 +216,14 @@ function unCompleteTask() {
   }
 }
 
+// CHECKBOX CREATOR
 function createCheckbox() {
   const checkbox = document.createElement("input"); // rename variable
   checkbox.type = "checkbox";
   return checkbox;
 }
 
-// task object creator
+// TASK OBJECT CREATOR
 function Task(title, projectIndex) {
   if (title !== "") {
     let currentIds = [];
@@ -241,11 +270,13 @@ function TaskDetails(id, project, dateDue, timeDue, priority, desc) {
   this.desc = desc;
 }
 
-// edit task details
-
-function editTaskDetails() {
+// TASK DETAILS DOM ELEMENTS
+// this function creates the task details elements
+function editTaskDetails(taskElement) {
   const taskDetailsContainer = document.createElement("ul");
   taskDetailsContainer.id = "details";
+  // hides the task details container by default
+  // taskDetailsContainer.style.display = "none";
 
   const elements = [
     { type: "h3", text: "Project" },
@@ -342,6 +373,17 @@ function editTaskDetails() {
   };
 
   window.addEventListener("load", setSelectWidth);
+
+  const toggleDetails = () => { 
+    if (taskDetailsContainer.style.display === "none") {
+      taskDetailsContainer.style.display = "block";
+    } else {
+      taskDetailsContainer.style.display = "none";
+    }
+  };
+
+  // taskElement.addEventListener("click", toggleDetails);
+
   return taskDetailsContainer;
 }
 
