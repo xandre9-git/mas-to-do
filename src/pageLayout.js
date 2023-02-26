@@ -65,7 +65,7 @@ currentTaskContainer.id = "current-tasks";
 
 const currentTasksTitle = document.createElement("h2");
 currentTasksTitle.className = "to-do-title";
-currentTasksTitle.textContent = "Current Tasks";
+currentTasksTitle.textContent = "Tasks";
 currentTaskContainer.appendChild(currentTasksTitle);
 
 const currentTasks = document.createElement("div");
@@ -153,8 +153,8 @@ const taskDetails = document.createElement("div");
 taskDetails.className = "to-do-boxes";
 taskDetailsContainer.appendChild(taskDetails);
 
-const testDetails = editTaskDetails();
-taskDetails.appendChild(testDetails);
+const detailsPane = editTaskDetails();
+taskDetails.appendChild(detailsPane);
 
 // add project to DOM
 addProjectButton.addEventListener("click", DOMProjectAdder);
