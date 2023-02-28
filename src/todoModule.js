@@ -132,6 +132,8 @@ function addTask(desc, isCompleted) {
   if (isCompleted) {
     taskContainer.classList.add("completed");
     taskContainer.style.textDecoration = "line-through";
+    // remove the edit button
+    editAndCheckBoxContainer.removeChild(editBtn);
   }
 
   descriptionTextNode.addEventListener("blur", function () {
@@ -178,6 +180,7 @@ function completeTask() {
   if (this.checked) {
     // Add a line through the task description to indicate that it's been completed
     taskDescription.style.setProperty("text-decoration", "line-through");
+    // reload the page
     location.reload();
 
     // Define a new function called moveTaskToCompleted, and bind it to the checkbox element
