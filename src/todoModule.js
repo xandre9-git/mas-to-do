@@ -154,7 +154,7 @@ function addTask(desc, isCompleted) {
       });
     }
   });
-
+  location.reload
   return taskContainer;
 }
 
