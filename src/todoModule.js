@@ -2,7 +2,7 @@
 
 import { projects } from "./dataStorage";
 import { projectTasks } from "./dataStorage";
-import { projectsList } from "./pageLayout";
+import { currentTasks, projectsList } from "./pageLayout";
 import format from "date-fns/format";
 
 // ADD PROJECT
@@ -83,24 +83,48 @@ function deleteProject(projectname, arr) {
 // ADD TASK MODULE
 // this function adds a task to the Tasks panel
 function addTask(desc, isCompleted) {
-  if (!desc) return; // check for falsy values
+  if (!desc) {
+    return; // check for falsy values and return early
+  }
 
-  const taskContainer = createTaskContainer(desc); // extract function
-  taskContainer.classList.add("checklist-task-item"); // add class to task container
+  const taskContainer = createTaskContainer(desc);
+  taskContainer.classList.add("checklist-task-item");
+
+  // get the first child of taskContainer (the description text node)
+  const descriptionTextNode = taskContainer.firstChild;
+  // get the text content of the description text node
+  const descriptionText = descriptionTextNode.textContent;
+
   const editBtn = createEditButton();
+  editBtn.addEventListener("click", function () {
+    // if task is not completed, make the description text node contenteditable
+    if (!isCompleted) {
+      // make the description text node contenteditable
+      descriptionTextNode.contentEditable = true;
+      // set focus to the description text node
+      descriptionTextNode.focus();
+      const range = document.createRange();
+      range.selectNodeContents(descriptionTextNode);
+      range.collapse(false);
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  });
+
   const taskCheckBox = createCheckbox();
-  taskCheckBox.className = "task-checkbox";
-  taskCheckBox.checked = isCompleted; // set checkbox to check if task is completed
+  taskCheckBox.classList.add("task-checkbox");
+  taskCheckBox.checked = isCompleted;
   taskCheckBox.addEventListener("change", function () {
     if (this.checked) {
-      completeTask.bind(this)(); // call completeTask after binding this
+      completeTask.bind(this)();
     } else {
-      unCompleteTask.bind(this)(); // call unCompleteTask after binding this
+      unCompleteTask.bind(this)();
     }
-  }); // add event listener to checkbox
-    // insert edit button before checkbox
+  });
+
   const editAndCheckBoxContainer = document.createElement("div");
-  editAndCheckBoxContainer.className = "edit-and-checkbox-container";
+  editAndCheckBoxContainer.classList.add("edit-and-checkbox-container");
   editAndCheckBoxContainer.appendChild(editBtn);
   editAndCheckBoxContainer.appendChild(taskCheckBox);
   taskContainer.appendChild(editAndCheckBoxContainer);
@@ -109,6 +133,21 @@ function addTask(desc, isCompleted) {
     taskContainer.classList.add("completed");
     taskContainer.style.textDecoration = "line-through";
   }
+
+  descriptionTextNode.addEventListener("blur", function () {
+    descriptionTextNode.contentEditable = false;
+    const newDesc = descriptionTextNode.textContent.trim();
+    if (newDesc) {
+      desc = newDesc;
+      projectTasks[0].currentTasks.forEach((task) => {
+        if (task.title === descriptionText) {
+          task.title = newDesc;
+          localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
+          location.reload();
+        }
+      });
+    }
+  });
 
   return taskContainer;
 }
@@ -140,7 +179,7 @@ function completeTask() {
     // Add a line through the task description to indicate that it's been completed
     taskDescription.style.setProperty("text-decoration", "line-through");
     location.reload();
-    
+
     // Define a new function called moveTaskToCompleted, and bind it to the checkbox element
     (function moveTaskToCompleted() {
       // Get the ID of the task from the value of the checkbox
@@ -374,7 +413,7 @@ function editTaskDetails(taskElement) {
 
   window.addEventListener("load", setSelectWidth);
 
-  const toggleDetails = () => { 
+  const toggleDetails = () => {
     if (taskDetailsContainer.style.display === "none") {
       taskDetailsContainer.style.display = "block";
     } else {
