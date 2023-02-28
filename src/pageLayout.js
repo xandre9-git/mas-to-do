@@ -6,6 +6,7 @@ import { addTask } from "./todoModule";
 import { editTaskDetails } from "./todoModule";
 import { Task } from "./todoModule";
 import { projectTasks } from "./dataStorage";
+import { projectSelection } from "./todoModule";
 
 // PROJECT NAMES
 // Get the projectnames from local storage or use an empty array if null
@@ -92,6 +93,8 @@ addTaskBtn.addEventListener("click", (e) => {
   // Get the input value
   let taskInput = document.getElementById("task-input-bar").value;
   if (taskInput != "") {
+    // Clear the input bar
+    document.getElementById("task-input-bar").value = "";
     // Create a new task object
     const newTaskItem = new Task(taskInput, 0);
     // Append the task to the current tasks list
