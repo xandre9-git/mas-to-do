@@ -111,7 +111,7 @@ currentTasks.appendChild(addTaskContainer);
 projectTasks?.forEach((task) => {
   task.currentTasks.forEach((currentTask) => {
     console.log(`currentTask: ${currentTask.title}`);
-    currentTasks.appendChild(addTask(currentTask.title, false, projectTasks[0]));
+    currentTasks.appendChild(addTask(currentTask.title));
   });
   task.completedTasks.forEach((completedTask) => {
     if (Array.isArray(completedTask)) {
@@ -143,6 +143,7 @@ addTaskLi.textContent = "";
 
 const taskDetailsContainer = document.createElement("div");
 taskDetailsContainer.id = "task-details";
+taskDetailsContainer.style.display = "none";
 
 const taskDetailsTitle = document.createElement("h2");
 taskDetailsTitle.className = "to-do-title";
@@ -155,6 +156,8 @@ taskDetailsContainer.appendChild(taskDetails);
 
 const detailsPane = editTaskDetails();
 taskDetails.appendChild(detailsPane);
+
+
 
 // add project to DOM
 addProjectButton.addEventListener("click", DOMProjectAdder);
@@ -214,6 +217,15 @@ delBtnArr.forEach((e, i) => {
   });
 });
 
+const allTasks = document.querySelectorAll(".checklist-task-item");
+let allTasksArr = Array.from(allTasks);
+allTasksArr.forEach((e, i) => {
+  e.addEventListener("click", function test() {
+    console.log(`allTasksArr[i]: ${allTasksArr[i].textContent}`);
+    // upon click of a task, open up the task details pane
+    taskDetailsContainer.style.display = "block";
+  });
+});
 
 export {
   body,
