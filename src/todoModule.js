@@ -154,6 +154,15 @@ function addTask(desc, isCompleted) {
   return taskContainer;
 }
 
+// PROJECT SELECTION MODULE
+// this function selects a project from the project list
+function projectSelection() {
+  const taskList = document.querySelectorAll(".checklist-task-item");
+  taskList.forEach((task) => {
+    console.log(task);
+  });
+}
+
 // TASKS
 
 // CREATE TASK CONTAINER
@@ -164,7 +173,6 @@ function createTaskContainer(desc) {
   const taskDesc = document.createElement("div");
   taskDesc.className = "checklist-task-item";
   taskDesc.textContent = desc;
-  // taskDesc.contentEditable = true;
   taskContainer.appendChild(taskDesc);
   return taskContainer;
 }
