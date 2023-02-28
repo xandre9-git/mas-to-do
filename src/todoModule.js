@@ -63,6 +63,10 @@ function DOMProjectAdder() {
   if (res != null && !projects.includes(res)) {
     projects.push(res);
     window.localStorage.setItem("projectnames", JSON.stringify(projects));
+    // "projectnames" needs to push an object with the projectName as the key and res as the value in projectTasks array, as well as a currentTasks array and completedTasks array
+    projectTasks.push({ projectName: res, currentTasks: [], completedTasks: [] } );
+    console.log(`projectTasks in DOMProjectAdder: ${projectTasks}`)
+    localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
     projectListSetter(res, projectsList);
     console.log(`res value: ${res}`);
     window.localStorage.setItem("projectname", res);
@@ -156,11 +160,8 @@ function addTask(desc, isCompleted) {
 
 // PROJECT SELECTION MODULE
 // this function selects a project from the project list
-function projectSelection() {
-  const taskList = document.querySelectorAll(".checklist-task-item");
-  taskList.forEach((task) => {
-    console.log(task);
-  });
+function projectSelection(task) {
+  
 }
 
 // TASKS
@@ -437,6 +438,8 @@ function editTaskDetails(taskElement) {
   return taskDetailsContainer;
 }
 
+
+
 export {
   addProject,
   createListItem,
@@ -446,4 +449,5 @@ export {
   addTask,
   editTaskDetails,
   Task,
+  projectSelection
 };
