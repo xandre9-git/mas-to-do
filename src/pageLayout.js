@@ -220,13 +220,18 @@ delBtnArr.forEach((e, i) => {
   });
 });
 
-const allTasks = document.querySelectorAll(".checklist-task-item");
+const allTasks = document.querySelectorAll("div.checklist-task-item");
+
 let allTasksArr = Array.from(allTasks);
 allTasksArr.forEach((e, i) => {
-  e.addEventListener("click", function test() {
+  e.childNodes[0].addEventListener("click", function test() {
     console.log(`allTasksArr[i]: ${allTasksArr[i].textContent}`);
-    // upon click of a task, open up the task details pane
-    taskDetailsContainer.style.display = "block";
+    // upon click of a task, open up or close the task details pane
+    if (taskDetailsContainer.style.display == "none") {
+      taskDetailsContainer.style.display = "block";
+    } else {
+      taskDetailsContainer.style.display = "none";
+    }
   });
 });
 
