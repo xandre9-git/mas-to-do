@@ -111,7 +111,7 @@ currentTasks.appendChild(addTaskContainer);
 projectTasks?.forEach((task) => {
   task.currentTasks.forEach((currentTask) => {
     console.log(`currentTask: ${currentTask.title}`);
-    currentTasks.appendChild(addTask(currentTask.title));
+    currentTasks.appendChild(addTask(currentTask.title, false, projectTasks[0]));
   });
   task.completedTasks.forEach((completedTask) => {
     if (Array.isArray(completedTask)) {
