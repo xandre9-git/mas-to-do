@@ -101,7 +101,7 @@ addTaskBtn.addEventListener("click", (e) => {
     currentTasks.appendChild(addTask(newTaskItem.title));
     // location.reload();
     localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
-    e.preventDefault();
+    // e.preventDefault();
   }
 });
 
