@@ -145,7 +145,7 @@ function addTask(desc, isCompleted) {
     const newDesc = descriptionTextNode.textContent.trim();
     if (newDesc) {
       desc = newDesc;
-      projectTasks[0].currentTasks.forEach((task) => {
+      projectTasks.currentTasks.forEach((task) => {
         if (task.title === descriptionText) {
           task.title = newDesc;
           localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
@@ -157,6 +157,7 @@ function addTask(desc, isCompleted) {
   
   return taskContainer;
 }
+
 
 // PROJECT SELECTION MODULE
 // this function selects a project from the project list
@@ -339,7 +340,8 @@ function editTaskDetails(taskTitle, projectName) {
     return;
   }
 
-  const taskTitleInput = document.querySelector(".checklist-task-item");
+  const taskTitleInput = taskTitle;
+  console.log(`taskTitleInput: ${taskTitleInput}`);
   const projectSelector = document.getElementById("project-selector");
   const dateDueInput = document.getElementById("date-due");
   const timeDueInput = document.getElementById("time-due");
@@ -348,20 +350,28 @@ function editTaskDetails(taskTitle, projectName) {
 
   const taskDetails = new TaskDetails(
     task.id,
-    taskTitleInput.value,
+    taskTitleInput,
     projectSelector.value,
     dateDueInput.value,
     timeDueInput.value,
     prioritySelector.value,
     taskDescriptionInput.value
   );
-
-  // project.currentTasks.splice(project.currentTasks.indexOf(task), 1, taskDetails);
   
-  // okay
-  console.log(`Seeing what this results in: ${JSON.stringify(taskDetails)}`)
-  // localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
+  const taskProject = projectTasks.find((project) => project.projectName === taskDetails.projectName);
+  
+  if (!taskProject) {
+    console.error(`Project "${taskDetails.projectName}" not found.`);
+    return;
+  }
+
+  taskProject.currentTasks.push(taskDetails);
+  project.currentTasks.splice(project.currentTasks.indexOf(task), 1);
+  
+  console.log(`Task "${taskTitle}" edited successfully in project "${projectName}".`);
+  localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
 }
+
 
 
 
@@ -376,9 +386,14 @@ function editTaskDetailsDOM(taskName) {
   // find the current project name of the taskName in projectTasks array
   const project = projectTasks.find((project) => {
     return project.currentTasks.find((task) => {
+      console.log(`task.title: ${task.title}`);
       return task.title === taskName;
     });
   });
+  // console.log(`project: ${JSON.stringify(project.projectName)}`);
+  if (project && project.projectName) {
+    console.log(`project.projectName: ${project.projectName}`);
+  }
   
   if (!project) {
     console.error(`Project not found for task "${taskName}".`);
@@ -486,7 +501,7 @@ function editTaskDetailsDOM(taskName) {
     // the task title and project name will be passed into the editTaskDetails function
     // the task title and project name will be used to find the task in the projectTasks object
 
-    // editTaskDetails(taskName, projectName);
+    editTaskDetails(taskName, project.projectName);
 
     console.log(`Testing this really quick`);
   });
