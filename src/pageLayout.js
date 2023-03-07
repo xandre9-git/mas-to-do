@@ -10,7 +10,7 @@ import { editTaskDetails } from "./todoModule";
 
 // PROJECT NAMES
 // Get the projectnames from local storage or use an empty array if null
-projects = JSON.parse(window.localStorage.getItem("projectnames")) || [];
+projects = JSON.parse(window.localStorage.getItem("projectnames")) || ["My Tasks"];
 console.log(`projects array: ${projects}`);
 console.log(`Type of projects array: ${typeof projects}`);
 
@@ -18,7 +18,7 @@ console.log(`Type of projects array: ${typeof projects}`);
 // Get the projectTasks from local storage or use a default object if null
 projectTasks = JSON.parse(window.localStorage.getItem("projectTasks")) || [
   {
-    projectName: "Unnamed Project",
+    projectName: "My Tasks",
     currentTasks: [],
     completedTasks: [],
   },
