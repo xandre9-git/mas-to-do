@@ -3,10 +3,10 @@ import { projectListSetter } from "./todoModule";
 import { DOMProjectAdder } from "./todoModule";
 import { deleteProject } from "./todoModule";
 import { addTask } from "./todoModule";
-import { editTaskDetails } from "./todoModule";
+import { editTaskDetailsDOM } from "./todoModule";
 import { Task } from "./todoModule";
 import { projectTasks } from "./dataStorage";
-import { projectSelection } from "./todoModule";
+import { editTaskDetails } from "./todoModule";
 
 // PROJECT NAMES
 // Get the projectnames from local storage or use an empty array if null
@@ -157,9 +157,9 @@ const taskDetails = document.createElement("div");
 taskDetails.className = "to-do-boxes";
 taskDetailsContainer.appendChild(taskDetails);
 
-const detailsPane = editTaskDetails();
-taskDetails.appendChild(detailsPane);
+const detailsPane = editTaskDetailsDOM();
 
+// taskDetails.appendChild(detailsPane);
 
 
 // add project to DOM
@@ -223,17 +223,40 @@ delBtnArr.forEach((e, i) => {
 const allTasks = document.querySelectorAll("div.checklist-task-item");
 
 let allTasksArr = Array.from(allTasks);
+let prevClickedTask = null;
+let selectedTaskTitle = "";
+
 allTasksArr.forEach((e, i) => {
   e.childNodes[0].addEventListener("click", function test() {
-    console.log(`allTasksArr[i]: ${allTasksArr[i].textContent}`);
-    // upon click of a task, open up or close the task details pane
-    if (taskDetailsContainer.style.display == "none") {
-      taskDetailsContainer.style.display = "block";
+    // save the clicked task's title as a global variable
+    selectedTaskTitle = allTasksArr[i].textContent;
+    console.log(`selectedTaskTitle: ${selectedTaskTitle}`);    
+    // create the details pane
+    // everytime this function is called a different attribute is assigned...
+    const detailsPane = editTaskDetailsDOM(selectedTaskTitle);
+    console.log(`detailsPane.getAttribute("data-task"): ${detailsPane.getAttribute("data-task")}`);
+    // check whether the detailsPane already exists in the document and whether it should be updated
+    const existingDetailsPane = document.getElementById("task-details");
+    console.log(`existingDetailsPane: ${existingDetailsPane}`);
+    if (existingDetailsPane.style.display === "block") {
+      console.log("Details pane already exists for this task.");
     } else {
-      taskDetailsContainer.style.display = "none";
+      // Add the details pane to the document
+      taskDetails.appendChild(detailsPane);
     }
+    // set the color of the previously clicked task to black
+    if (prevClickedTask != null) {
+      prevClickedTask.style.color = "";
+    } 
+    // set the color of the newly clicked task
+    allTasksArr[i].style.color = "#BF40BF";
+    // set the taskDetailsContainer to display block
+    taskDetailsContainer.style.display = "block";
+    // set the current task as the previously clicked task
+    prevClickedTask = allTasksArr[i];
   });
 });
+
 
 export {
   body,
