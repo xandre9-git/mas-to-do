@@ -299,10 +299,11 @@ function Task(title, projectIndex) {
     let newTask = {
       id: newId,
       title: title,
-      desc: "",
+      projectName: projectTasks[projectIndex].projectName,
       dateDue: new Date(),
       timeDue: "",
       priority: "None",
+      desc: ""
     };
 
     // Push the new task to the correct project
@@ -485,25 +486,30 @@ function editTaskDetailsDOM(taskName) {
     detailBtnsContainer.appendChild(element);
     taskDetailsContainer.appendChild(detailBtnsContainer);
   }
+
+  // after the taskDetailsContainer is created, details from the taskName need to be added to the taskDetailsContainer
+  // find the taskName in projectTasks array
+  const task = project.currentTasks.find((task) => task.title === taskName);
+  console.log(`task: ${JSON.stringify(task)}`);
+  if (!task) {
+    console.error(`Task "${taskName}" not found.`);
+    return;
+  }
+
+  // add the task details to the taskDetailsContainer
+  taskDetailsContainer.querySelector("#project-selector").value = task.projectName;
+  taskDetailsContainer.querySelector("#date-due").value = task.dateDue;
+  taskDetailsContainer.querySelector("#time-due").value = task.timeDue;
+  taskDetailsContainer.querySelector("#priority-selector").value = task.priority;
+  taskDetailsContainer.querySelector("#task-description").value = task.desc;
+
+
   
   // select the detailBtns with an id of save-btn and add an event listener to it
   // when clicked, call the editTaskDetails function
   taskDetailsContainer.querySelector("#save-btn").addEventListener("click", () => {
-    // this worked
-    // editTaskDetails('Finish to do app', 'Unnamed Project');
-    // editTaskDetails needs to find out the task title and project name based on the task that was clicked
-
-    // task clicked needs to be saved as a variable
-
-    // tasks that have no project name will have the project name of 'Unnamed Project'
-    // the task title is the textContent of the "div.checklist-task-item"
-    // the project name is the key of the projectTasks object that the task is in
-    // the task title and project name will be passed into the editTaskDetails function
-    // the task title and project name will be used to find the task in the projectTasks object
-
+    console.log(`save-btn clicked`);
     editTaskDetails(taskName, project.projectName);
-
-    console.log(`Testing this really quick`);
   });
 
   const setSelectWidth = () => {
