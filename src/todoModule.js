@@ -2,7 +2,7 @@
 
 import { projects } from "./dataStorage";
 import { projectTasks } from "./dataStorage";
-import { currentTasks, projectsList } from "./pageLayout";
+import { currentTasks, projectsList, selectedTaskTitle } from "./pageLayout";
 import format from "date-fns/format";
 
 // ADD PROJECT
@@ -154,7 +154,7 @@ function addTask(desc, isCompleted) {
       });
     }
   });
-  location.reload
+  
   return taskContainer;
 }
 
@@ -312,22 +312,84 @@ function Task(title, projectIndex) {
   }
 }
 
-function TaskDetails(id, project, dateDue, timeDue, priority, desc) {
-  this.id = id;
-  this.project = project;
-  this.dateDue = dateDue;
-  this.timeDue = timeDue;
-  this.priority = priority;
-  this.desc = desc;
+class TaskDetails {
+  constructor(id, title, projectName, dateDue, timeDue, priority, desc) {
+    this.id = id;
+    this.title = title;
+    this.projectName = projectName;
+    this.dateDue = dateDue;
+    this.timeDue = timeDue;
+    this.priority = priority;
+    this.desc = desc;
+  }
 }
+
+function editTaskDetails(taskTitle, projectName) {
+  const project = projectTasks.find((project) => project.projectName === projectName);
+
+  if (!project) {
+    console.error(`Project "${projectName}" not found.`);
+    return;
+  }
+
+  const task = project.currentTasks.find((task) => task.title === taskTitle);
+
+  if (!task) {
+    console.error(`Task "${taskTitle}" not found in project "${projectName}".`);
+    return;
+  }
+
+  const taskTitleInput = document.querySelector(".checklist-task-item");
+  const projectSelector = document.getElementById("project-selector");
+  const dateDueInput = document.getElementById("date-due");
+  const timeDueInput = document.getElementById("time-due");
+  const prioritySelector = document.getElementById("priority-selector");
+  const taskDescriptionInput = document.getElementById("task-description");
+
+  const taskDetails = new TaskDetails(
+    task.id,
+    taskTitleInput.value,
+    projectSelector.value,
+    dateDueInput.value,
+    timeDueInput.value,
+    prioritySelector.value,
+    taskDescriptionInput.value
+  );
+
+  // project.currentTasks.splice(project.currentTasks.indexOf(task), 1, taskDetails);
+  
+  // okay
+  console.log(`Seeing what this results in: ${JSON.stringify(taskDetails)}`)
+  // localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
+}
+
+
+
+
+
 
 // TASK DETAILS DOM ELEMENTS
 // this function creates the task details elements
-function editTaskDetails(taskElement) {
+function editTaskDetailsDOM(taskName) {
+  console.log("editTaskDetailsDOM called");
+  console.log(`taskName: ${taskName}`);
+  // find the current project name of the taskName in projectTasks array
+  const project = projectTasks.find((project) => {
+    return project.currentTasks.find((task) => {
+      return task.title === taskName;
+    });
+  });
+  
+  if (!project) {
+    console.error(`Project not found for task "${taskName}".`);
+    return;
+  }
+
   const taskDetailsContainer = document.createElement("ul");
   taskDetailsContainer.id = "details";
-  // hides the task details container by default
-  // taskDetailsContainer.style.display = "none";
+
+  // set data attribute for taskDetailsContainer
+  taskDetailsContainer.setAttribute("data-task", taskName);
 
   const elements = [
     { type: "h3", text: "Project" },
@@ -340,7 +402,7 @@ function editTaskDetails(taskElement) {
       ],
     },
     { type: "h3", text: "Date Due" },
-    { type: "input", attributes: { type: "date" } },
+    { type: "input", id: "date-due", attributes: { type: "date" } },
     { type: "h3", text: "Task Priority" },
     {
       type: "select",
@@ -353,11 +415,11 @@ function editTaskDetails(taskElement) {
       ],
     },
     { type: "h3", text: "Time Due" },
-    { type: "input", attributes: { type: "time" } },
+    { type: "input", id: "time-due", attributes: { type: "time" } },
     { type: "h3", text: "Description" },
     {
       type: "textarea",
-      id: "detail-desc",
+      id: "task-description",
       attributes: { placeholder: "Enter description." },
     },
   ];
@@ -408,6 +470,26 @@ function editTaskDetails(taskElement) {
     detailBtnsContainer.appendChild(element);
     taskDetailsContainer.appendChild(detailBtnsContainer);
   }
+  
+  // select the detailBtns with an id of save-btn and add an event listener to it
+  // when clicked, call the editTaskDetails function
+  taskDetailsContainer.querySelector("#save-btn").addEventListener("click", () => {
+    // this worked
+    // editTaskDetails('Finish to do app', 'Unnamed Project');
+    // editTaskDetails needs to find out the task title and project name based on the task that was clicked
+
+    // task clicked needs to be saved as a variable
+
+    // tasks that have no project name will have the project name of 'Unnamed Project'
+    // the task title is the textContent of the "div.checklist-task-item"
+    // the project name is the key of the projectTasks object that the task is in
+    // the task title and project name will be passed into the editTaskDetails function
+    // the task title and project name will be used to find the task in the projectTasks object
+
+    // editTaskDetails(taskName, projectName);
+
+    console.log(`Testing this really quick`);
+  });
 
   const setSelectWidth = () => {
     const setWidth = (select) => {
@@ -425,16 +507,6 @@ function editTaskDetails(taskElement) {
 
   window.addEventListener("load", setSelectWidth);
 
-  const toggleDetails = () => {
-    if (taskDetailsContainer.style.display === "none") {
-      taskDetailsContainer.style.display = "block";
-    } else {
-      taskDetailsContainer.style.display = "none";
-    }
-  };
-
-  // taskElement.addEventListener("click", toggleDetails);
-
   return taskDetailsContainer;
 }
 
@@ -447,7 +519,8 @@ export {
   DOMProjectAdder,
   deleteProject,
   addTask,
-  editTaskDetails,
+  editTaskDetailsDOM,
   Task,
-  projectSelection
+  projectSelection,
+  editTaskDetails,
 };
