@@ -111,25 +111,27 @@ currentTasks.appendChild(addTaskContainer);
 
 // SHOW ALL TASKS ON PAGE
 
-projectTasks?.forEach((task) => {
-  task.currentTasks.forEach((currentTask) => {
-    console.log(`currentTask: ${currentTask.title}`);
+projectTasks?.forEach((project) => {
+  const projectName = project.projectName;
+  project.currentTasks.forEach((currentTask) => {
+    console.log(`currentTask (${projectName}): ${currentTask.title}`);
     currentTasks.appendChild(addTask(currentTask.title));
   });
-  task.completedTasks.forEach((completedTask) => {
+  project.completedTasks.forEach((completedTask) => {
     if (Array.isArray(completedTask)) {
       // if the completedTask is an array, loop through its items
       completedTask.forEach((subtask) => {
-        console.log(`completedTask (subtask): ${subtask.title}`);
+        console.log(`completedTask (subtask) (${projectName}): ${subtask.title}`);
         currentTasks.appendChild(addTask(subtask.title, true));
       });
     } else {
       // if the completedTask is an object, add it as a single task
-      console.log(`completedTask: ${completedTask.title}`);
+      console.log(`completedTask (${projectName}): ${completedTask.title}`);
       currentTasks.appendChild(addTask(completedTask.title, true));
     }
   });
 });
+
 
 
 
@@ -157,7 +159,7 @@ const taskDetails = document.createElement("div");
 taskDetails.className = "to-do-boxes";
 taskDetailsContainer.appendChild(taskDetails);
 
-const detailsPane = editTaskDetailsDOM();
+// const detailsPane = editTaskDetailsDOM();
 
 // taskDetails.appendChild(detailsPane);
 
@@ -232,9 +234,8 @@ allTasksArr.forEach((e, i) => {
     selectedTaskTitle = allTasksArr[i].textContent;
     console.log(`selectedTaskTitle: ${selectedTaskTitle}`);    
     // create the details pane
-    // everytime this function is called a different attribute is assigned...
     const detailsPane = editTaskDetailsDOM(selectedTaskTitle);
-    console.log(`detailsPane.getAttribute("data-task"): ${detailsPane.getAttribute("data-task")}`);
+
     // check whether the detailsPane already exists in the document and whether it should be updated
     const existingDetailsPane = document.getElementById("task-details");
     console.log(`existingDetailsPane: ${existingDetailsPane}`);
