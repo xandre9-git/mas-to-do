@@ -96,6 +96,8 @@ addTaskBtn.addEventListener("click", (e) => {
     // Clear the input bar
     document.getElementById("task-input-bar").value = "";
     // Create a new task object
+    // this function needs to be dynamic and select the correct project for its second parameter
+    
     const newTaskItem = new Task(taskInput, 0);
     // Append the task to the current tasks list
     currentTasks.appendChild(addTask(newTaskItem.title));
@@ -236,11 +238,30 @@ allTasksArr.forEach((e, i) => {
     // create the details pane
     const detailsPane = editTaskDetailsDOM(selectedTaskTitle);
 
-    // check whether the detailsPane already exists in the document and whether it should be updated
+    // reworking this
+    // check if the details pane already exists yes
+    // if it does exist, check to see if it matches with the current task's properties
+    // if it does match, do nothing
+    // if it doesn't match, remove the existing details pane and add the new one
+    // if it doesn't exist, add the details pane to the document
+
     const existingDetailsPane = document.getElementById("task-details");
     console.log(`existingDetailsPane: ${existingDetailsPane}`);
     if (existingDetailsPane.style.display === "block") {
-      console.log("Details pane already exists for this task.");
+      // if it does exist, check to see if it matches with the current task's properties
+      // if it does match, do nothing
+      // if it doesn't match, remove the existing details pane and add the new one
+      if (existingDetailsPane.childNodes[1].childNodes[0].textContent === selectedTaskTitle) {
+           // do nothing
+      }
+      else {
+        // remove the existing details pane
+        while (taskDetails.firstChild) {
+          taskDetails.removeChild(taskDetails.firstChild);
+        }
+        // add the new details pane
+        taskDetails.appendChild(detailsPane);
+      }
     } else {
       // Add the details pane to the document
       taskDetails.appendChild(detailsPane);
