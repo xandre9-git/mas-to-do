@@ -96,8 +96,7 @@ addTaskBtn.addEventListener("click", (e) => {
     // Clear the input bar
     document.getElementById("task-input-bar").value = "";
     // Create a new task object
-    // this function needs to be dynamic and select the correct project for its second parameter
-    
+    // this variable needs to be dynamic and select the correct project for its second parameter
     const newTaskItem = new Task(taskInput, 0);
     // Append the task to the current tasks list
     currentTasks.appendChild(addTask(newTaskItem.title));
@@ -173,6 +172,27 @@ addProjectButton.addEventListener("click", DOMProjectAdder);
 projects?.forEach((project) => {
   projectListSetter(project, projectsList);
 });
+
+// projects that are clicked need to show their tasks
+projectsList.addEventListener("click", (e) => {
+  // get the project name
+  const projectName = e.target.textContent;
+  console.log(`projectName: ${projectName}`);
+  // get the project object
+  console.log(`projects: ${projects}`)
+  const project = projectTasks.find((project) => project.projectName === projectName);
+  // get the project's tasks
+  const projectTaskz = project.currentTasks;
+  // clear the current tasks
+  currentTasks.innerHTML = "";
+  // add the project's tasks to the DOM
+  projectTaskz.forEach((task) => {
+    // need to add task input bar as well
+    currentTasks.appendChild(addTaskContainer);
+    currentTasks.appendChild(addTask(task.title));
+  });
+});
+
 
 // appends
 // Create a function to append multiple elements to a parent element
