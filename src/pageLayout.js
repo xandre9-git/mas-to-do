@@ -111,9 +111,34 @@ currentTasks.appendChild(addTaskContainer);
 
 
 // SHOW ALL TASKS ON PAGE
+// this needs to show the My Tasks project by default
+// i will use this later on for all tasks to show under the "All Tasks" project
+// projectTasks?.forEach((project) => {
+//   const projectName = project.projectName;
+//   project.currentTasks.forEach((currentTask) => {
+//     console.log(`currentTask (${projectName}): ${currentTask.title}`);
+//     currentTasks.appendChild(addTask(currentTask.title));
+//   });
+//   project.completedTasks.forEach((completedTask) => {
+//     if (Array.isArray(completedTask)) {
+//       // if the completedTask is an array, loop through its items
+//       completedTask.forEach((subtask) => {
+//         console.log(`completedTask (subtask) (${projectName}): ${subtask.title}`);
+//         currentTasks.appendChild(addTask(subtask.title, true));
+//       });
+//     } else {
+//       // if the completedTask is an object, add it as a single task
+//       console.log(`completedTask (${projectName}): ${completedTask.title}`);
+//       currentTasks.appendChild(addTask(completedTask.title, true));
+//     }
+//   });
+// });
 
-projectTasks?.forEach((project) => {
+projectTasks.forEach((project) => {
   const projectName = project.projectName;
+  if (projectName !== "My Tasks") {
+    return; // skip this project
+  }
   project.currentTasks.forEach((currentTask) => {
     console.log(`currentTask (${projectName}): ${currentTask.title}`);
     currentTasks.appendChild(addTask(currentTask.title));
@@ -132,8 +157,6 @@ projectTasks?.forEach((project) => {
     }
   });
 });
-
-
 
 
 
@@ -180,15 +203,22 @@ projectsList.addEventListener("click", (e) => {
   console.log(`projectName: ${projectName}`);
   // get the project object
   console.log(`projects: ${projects}`)
+  // code below needs an if statement to check if the project is in the projects array
+  // if it is, then it will run the code below
   const project = projectTasks.find((project) => project.projectName === projectName);
+  if (!project) {
+    console.log(`Project '${projectName}' not found in projectTasks array.`);
+    return;
+  }
   // get the project's tasks
   const projectTaskz = project.currentTasks;
   // clear the current tasks
-  currentTasks.innerHTML = "";
+  currentTasks.innerHTML = "";    currentTasks.appendChild(addTaskContainer);
   // add the project's tasks to the DOM
   projectTaskz.forEach((task) => {
     // need to add task input bar as well
-    currentTasks.appendChild(addTaskContainer);
+    console.log(`Testing to see if this works: ${task.title}`)
+    // currentTasks.appendChild(addTaskContainer);
     currentTasks.appendChild(addTask(task.title));
   });
 });
