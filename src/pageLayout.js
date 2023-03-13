@@ -6,10 +6,10 @@ import { addTask } from "./todoModule";
 import { editTaskDetailsDOM } from "./todoModule";
 import { Task } from "./todoModule";
 import { projectTasks } from "./dataStorage";
-import { editTaskDetails } from "./todoModule";
+
 
 // PROJECT NAMES
-// Get the projectnames from local storage or use an empty array if null
+// Get the projectnames from local storage or use a default object if null
 projects = JSON.parse(window.localStorage.getItem("projectnames")) || [
   "My Tasks",
 ];
@@ -29,55 +29,60 @@ console.log("projectTasks array: ", projectTasks);
 console.log(`Type of projectTasks array: ${typeof projectTasks}`);
 
 // This is for the DOM
-
+// This is the main container for the page
 const body = document.getElementById("content");
-
+// This is the top bar
 const topBar = document.createElement("div");
 topBar.id = "top-bar";
-
+// This is the title of the app
 const appTitle = document.createElement("h1");
 appTitle.textContent = "Mas To Do";
 appTitle.className = "title";
-
+// This is the left side bar
 const leftSideBar = document.createElement("div");
 leftSideBar.id = "left-side-bar";
-
+// projects section
 const projectsTitle = document.createElement("div");
 projectsTitle.id = "projects-title";
 projectsTitle.textContent = "Projects";
-
+// projects container
 const projectsContainer = document.createElement("div");
 projectsContainer.id = "projects-container";
-
+// projects list
 const projectsList = document.createElement("ul");
 projectsList.id = "projects-ul";
+// add project button
 const addProjectButton = document.createElement("li");
 addProjectButton.className = "add-projects";
 addProjectButton.textContent = "+ Add Project";
 
+// container for the to-dos
 const todoBoardsContainer = document.createElement("div");
 todoBoardsContainer.id = "to-dos-container";
 
+// current tasks container
 const currentContainer = document.createElement("div");
 currentContainer.className = "task-boxes-container";
 
 // current tasks DOM
-
 const currentTaskContainer = document.createElement("div");
 currentTaskContainer.id = "current-tasks";
 
+// current tasks title
 const currentTasksTitle = document.createElement("h2");
 currentTasksTitle.className = "to-do-title";
 currentTasksTitle.textContent = "Tasks";
 currentTaskContainer.appendChild(currentTasksTitle);
 
+// current tasks list
 const currentTasks = document.createElement("div");
 currentTasks.className = "to-do-boxes";
 currentTaskContainer.appendChild(currentTasks);
 
+// add task bar form
 const addTaskContainer = document.createElement("form");
 addTaskContainer.id = "add-taskbar";
-
+// add task input
 const addTaskInput = document.createElement("input");
 addTaskInput.id = "task-input-bar";
 addTaskInput.placeholder = "Add a task to complete";
@@ -99,6 +104,9 @@ addTaskBtn.addEventListener("click", (e) => {
     document.getElementById("task-input-bar").value = "";
     // Create a new task object
     // this variable needs to be dynamic and select the correct project for its second parameter
+    // check which project is selected
+    const selectedProject = document.querySelector(".selected-project");
+    console.log(`selectedProject: ${selectedProject}`);
     const newTaskItem = new Task(taskInput, 0);
     // Append the task to the current tasks list
     currentTasks.appendChild(addTask(newTaskItem.title));
@@ -195,14 +203,32 @@ projects?.forEach((project) => {
 });
 
 // projects that are clicked need to show their tasks
+let prevClickedProject = null;
+
 projectsList.addEventListener("click", (e) => {
+  // get the id of the project that was clicked
+  const projectId = e.target.id;
+  // select the dom element that matches the id
+  const projectSelected = document.getElementById(projectId);
+  // display the current font color of projectSelected
+  console.log(`projectSelected font color: ${projectSelected.style.color}`);
+
+  // Set font color of previous clicked project back to white
+  if (prevClickedProject) {
+    prevClickedProject.style.color = "white";
+  }
+
+  // Set font color of newly clicked project to gold
+  projectSelected.style.color = "gold";
+  prevClickedProject = projectSelected;
+
   // get the project name
   const projectName = e.target.textContent;
   console.log(`projectName: ${projectName}`);
   // get the project object
   console.log(`projects: ${projects}`);
-  // code below needs an if statement to check if the project is in the projects array
-  // if it is, then it will run the code below
+ 
+  // find the projectName in the projectTasks array
   const project = projectTasks.find(
     (project) => project.projectName === projectName
   );
@@ -210,8 +236,10 @@ projectsList.addEventListener("click", (e) => {
     console.log(`Project '${projectName}' not found in projectTasks array.`);
     return;
   }
+  console.log(`project: ${project.projectName}`);
   // get the project's tasks
   const projectTaskz = project.currentTasks;
+  console.log(`projectTaskz: ${projectTaskz}`);
   // clear the current tasks
   currentTasks.innerHTML = "";
   // add the task input bar
@@ -225,7 +253,8 @@ projectsList.addEventListener("click", (e) => {
     currentTasks.addEventListener("click", function details() {
       console.log(`task: ${task.title}`);
       // save the clicked task's title as a global variable
-      selectedTaskTitle = task.textContent.trim();
+      // selectedTaskTitle = task.textContent.trim();
+      selectedTaskTitle = task.title;
       console.log(`selectedTaskTitle: ${selectedTaskTitle}`);
 
       // create the details pane
@@ -256,16 +285,18 @@ projectsList.addEventListener("click", (e) => {
       }
 
       // set the color of the newly clicked task
-      task.style.color = "#BF40BF";
+      const clickedTask = event.target;
+      clickedTask.style.color = "#BF40BF";
 
       // set the taskDetailsContainer to display block
       taskDetailsContainer.style.display = "block";
 
       // set the current task as the previously clicked task
-      prevClickedTask = task;
+      prevClickedTask = clickedTask;
     });
   });
 });
+
 
 // appends
 // Create a function to append multiple elements to a parent element
@@ -292,17 +323,31 @@ editBtnArr.forEach((e, i) => {
     console.log(
       `editBtnArr[i]: ${editBtnArr[i].closest(".added-projects").id}`
     );
+    // find the projectName in the projectTasks array
+    const project = projectTasks.find(
+      (project) => project.projectName === editBtnArr[i].closest(".added-projects").id
+    );
+    console.log(`project: ${project.projectName}`);
     const index = projects.indexOf(editBtnArr[i].closest(".added-projects").id);
     console.log(index);
     let editName = prompt("Edit name:");
-    if (editName != null && !projects.includes(editName)) {
+    if (editName != null && !projectTasks.includes(editName)) {
       console.log("This if statement executed.");
       projects[index] = editName;
       console.log(projects);
       window.localStorage.setItem("projectnames", JSON.stringify(projects));
-    }
+      // update the project name in the projectTasks array
+      projectTasks.forEach((project) => {
+        if (project.projectName === editBtnArr[i].closest(".added-projects").id) {
+          project.projectName = editName;
+          localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
+          console.log(`Testing: ${project.projectName}`)
+        }
+      });
     document.location.reload();
-  });
+  }
+
+})
 });
 
 // delete project

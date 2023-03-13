@@ -553,6 +553,5 @@ export {
   addTask,
   editTaskDetailsDOM,
   Task,
-  projectSelection,
   editTaskDetails,
 };
