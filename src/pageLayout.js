@@ -10,7 +10,9 @@ import { editTaskDetails } from "./todoModule";
 
 // PROJECT NAMES
 // Get the projectnames from local storage or use an empty array if null
-projects = JSON.parse(window.localStorage.getItem("projectnames")) || ["My Tasks"];
+projects = JSON.parse(window.localStorage.getItem("projectnames")) || [
+  "My Tasks",
+];
 console.log(`projects array: ${projects}`);
 console.log(`Type of projects array: ${typeof projects}`);
 
@@ -108,8 +110,6 @@ addTaskBtn.addEventListener("click", (e) => {
 
 currentTasks.appendChild(addTaskContainer);
 
-
-
 // SHOW ALL TASKS ON PAGE
 // this needs to show the My Tasks project by default
 // i will use this later on for all tasks to show under the "All Tasks" project
@@ -147,7 +147,9 @@ projectTasks.forEach((project) => {
     if (Array.isArray(completedTask)) {
       // if the completedTask is an array, loop through its items
       completedTask.forEach((subtask) => {
-        console.log(`completedTask (subtask) (${projectName}): ${subtask.title}`);
+        console.log(
+          `completedTask (subtask) (${projectName}): ${subtask.title}`
+        );
         currentTasks.appendChild(addTask(subtask.title, true));
       });
     } else {
@@ -157,9 +159,6 @@ projectTasks.forEach((project) => {
     }
   });
 });
-
-
-
 
 const currentTaskList = document.createElement("ul");
 currentTaskList.id = "current-tasks-ul";
@@ -187,7 +186,6 @@ taskDetailsContainer.appendChild(taskDetails);
 
 // taskDetails.appendChild(detailsPane);
 
-
 // add project to DOM
 addProjectButton.addEventListener("click", DOMProjectAdder);
 
@@ -202,10 +200,12 @@ projectsList.addEventListener("click", (e) => {
   const projectName = e.target.textContent;
   console.log(`projectName: ${projectName}`);
   // get the project object
-  console.log(`projects: ${projects}`)
+  console.log(`projects: ${projects}`);
   // code below needs an if statement to check if the project is in the projects array
   // if it is, then it will run the code below
-  const project = projectTasks.find((project) => project.projectName === projectName);
+  const project = projectTasks.find(
+    (project) => project.projectName === projectName
+  );
   if (!project) {
     console.log(`Project '${projectName}' not found in projectTasks array.`);
     return;
@@ -213,16 +213,59 @@ projectsList.addEventListener("click", (e) => {
   // get the project's tasks
   const projectTaskz = project.currentTasks;
   // clear the current tasks
-  currentTasks.innerHTML = "";    currentTasks.appendChild(addTaskContainer);
+  currentTasks.innerHTML = "";
+  // add the task input bar
+  currentTasks.appendChild(addTaskContainer);
   // add the project's tasks to the DOM
   projectTaskz.forEach((task) => {
     // need to add task input bar as well
-    console.log(`Testing to see if this works: ${task.title}`)
+    console.log(`Testing to see if this works: ${task.title}`);
     // currentTasks.appendChild(addTaskContainer);
     currentTasks.appendChild(addTask(task.title));
+    currentTasks.addEventListener("click", function details() {
+      console.log(`task: ${task.title}`);
+      // save the clicked task's title as a global variable
+      selectedTaskTitle = task.textContent.trim();
+      console.log(`selectedTaskTitle: ${selectedTaskTitle}`);
+
+      // create the details pane
+      const detailsPane = editTaskDetailsDOM(selectedTaskTitle);
+
+      // check if the details pane already exists
+      const existingDetailsPane = document.querySelector(".details-pane");
+
+      if (
+        existingDetailsPane &&
+        existingDetailsPane.textContent.trim() === selectedTaskTitle
+      ) {
+        // if it does exist and matches the current task, do nothing
+        return;
+      }
+
+      // if it does exist but doesn't match, remove it
+      if (existingDetailsPane) {
+        existingDetailsPane.parentNode.removeChild(existingDetailsPane);
+      }
+
+      // add the new details pane
+      taskDetails.appendChild(detailsPane);
+
+      // set the color of the previously clicked task to black
+      if (prevClickedTask) {
+        prevClickedTask.style.color = "";
+      }
+
+      // set the color of the newly clicked task
+      task.style.color = "#BF40BF";
+
+      // set the taskDetailsContainer to display block
+      taskDetailsContainer.style.display = "block";
+
+      // set the current task as the previously clicked task
+      prevClickedTask = task;
+    });
   });
 });
-
 
 // appends
 // Create a function to append multiple elements to a parent element
@@ -276,59 +319,54 @@ delBtnArr.forEach((e, i) => {
 
 const allTasks = document.querySelectorAll("div.checklist-task-item");
 
-let allTasksArr = Array.from(allTasks);
+const allTasksArr = Array.from(allTasks);
 let prevClickedTask = null;
 let selectedTaskTitle = "";
 
-allTasksArr.forEach((e, i) => {
-  e.childNodes[0].addEventListener("click", function test() {
+allTasksArr.forEach((task) => {
+  task.childNodes[0].addEventListener("click", function details() {
+    console.log(`task: ${task.textContent}`);
     // save the clicked task's title as a global variable
-    selectedTaskTitle = allTasksArr[i].textContent;
-    console.log(`selectedTaskTitle: ${selectedTaskTitle}`);    
+    selectedTaskTitle = task.textContent.trim();
+    console.log(`selectedTaskTitle: ${selectedTaskTitle}`);
+
     // create the details pane
     const detailsPane = editTaskDetailsDOM(selectedTaskTitle);
 
-    // reworking this
-    // check if the details pane already exists yes
-    // if it does exist, check to see if it matches with the current task's properties
-    // if it does match, do nothing
-    // if it doesn't match, remove the existing details pane and add the new one
-    // if it doesn't exist, add the details pane to the document
+    // check if the details pane already exists
+    const existingDetailsPane = document.querySelector(".details-pane");
 
-    const existingDetailsPane = document.getElementById("task-details");
-    console.log(`existingDetailsPane: ${existingDetailsPane}`);
-    if (existingDetailsPane.style.display === "block") {
-      // if it does exist, check to see if it matches with the current task's properties
-      // if it does match, do nothing
-      // if it doesn't match, remove the existing details pane and add the new one
-      if (existingDetailsPane.childNodes[1].childNodes[0].textContent === selectedTaskTitle) {
-           // do nothing
-      }
-      else {
-        // remove the existing details pane
-        while (taskDetails.firstChild) {
-          taskDetails.removeChild(taskDetails.firstChild);
-        }
-        // add the new details pane
-        taskDetails.appendChild(detailsPane);
-      }
-    } else {
-      // Add the details pane to the document
-      taskDetails.appendChild(detailsPane);
+    if (
+      existingDetailsPane &&
+      existingDetailsPane.textContent.trim() === selectedTaskTitle
+    ) {
+      // if it does exist and matches the current task, do nothing
+      return;
     }
+
+    // if it does exist but doesn't match, remove it
+    if (existingDetailsPane) {
+      existingDetailsPane.parentNode.removeChild(existingDetailsPane);
+    }
+
+    // add the new details pane
+    taskDetails.appendChild(detailsPane);
+
     // set the color of the previously clicked task to black
-    if (prevClickedTask != null) {
+    if (prevClickedTask) {
       prevClickedTask.style.color = "";
-    } 
+    }
+
     // set the color of the newly clicked task
-    allTasksArr[i].style.color = "#BF40BF";
+    task.style.color = "#BF40BF";
+
     // set the taskDetailsContainer to display block
     taskDetailsContainer.style.display = "block";
+
     // set the current task as the previously clicked task
-    prevClickedTask = allTasksArr[i];
+    prevClickedTask = task;
   });
 });
-
 
 export {
   body,
