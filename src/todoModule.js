@@ -64,8 +64,12 @@ function DOMProjectAdder() {
     projects.push(res);
     window.localStorage.setItem("projectnames", JSON.stringify(projects));
     // "projectnames" needs to push an object with the projectName as the key and res as the value in projectTasks array, as well as a currentTasks array and completedTasks array
-    projectTasks.push({ projectName: res, currentTasks: [], completedTasks: [] } );
-    console.log(`projectTasks in DOMProjectAdder: ${projectTasks}`)
+    projectTasks.push({
+      projectName: res,
+      currentTasks: [],
+      completedTasks: [],
+    });
+    console.log(`projectTasks in DOMProjectAdder: ${projectTasks}`);
     localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
     projectListSetter(res, projectsList);
     console.log(`res value: ${res}`);
@@ -90,15 +94,14 @@ function addTask(desc, isCompleted) {
   if (!desc) {
     return; // check for falsy values and return early
   }
-
+  // create a task container
   const taskContainer = createTaskContainer(desc);
   taskContainer.classList.add("checklist-task-item");
-
   // get the first child of taskContainer (the description text node)
   const descriptionTextNode = taskContainer.firstChild;
   // get the text content of the description text node
   const descriptionText = descriptionTextNode.textContent;
-
+  // create an edit button
   const editBtn = createEditButton();
   editBtn.addEventListener("click", function () {
     // if task is not completed, make the description text node contenteditable
@@ -107,62 +110,69 @@ function addTask(desc, isCompleted) {
       descriptionTextNode.contentEditable = true;
       // set focus to the description text node
       descriptionTextNode.focus();
+      // select the text in the description text node
       const range = document.createRange();
+      // select the entire text node
       range.selectNodeContents(descriptionTextNode);
+      // collapse the range to the end of the text node
       range.collapse(false);
+      // get the selection object
       const selection = window.getSelection();
+      // remove any existing ranges
       selection.removeAllRanges();
+      // add the new range
       selection.addRange(range);
     }
   });
-
+  // create a checkbox
   const taskCheckBox = createCheckbox();
+  // add the "task-checkbox" class to the checkbox
   taskCheckBox.classList.add("task-checkbox");
+  // set the checkbox checked state to the isCompleted value
   taskCheckBox.checked = isCompleted;
+  // add an event listener to the checkbox
   taskCheckBox.addEventListener("change", function () {
+    // if the checkbox is checked, call the completeTask function
     if (this.checked) {
-      completeTask.bind(this)();
+      completeTask.bind(this)(); // bind the checkbox to the completeTask function
     } else {
-      unCompleteTask.bind(this)();
+      unCompleteTask.bind(this)(); // bind the checkbox to the unCompleteTask function
     }
   });
-
+  // create a div to hold the edit button and checkbox
   const editAndCheckBoxContainer = document.createElement("div");
   editAndCheckBoxContainer.classList.add("edit-and-checkbox-container");
   editAndCheckBoxContainer.appendChild(editBtn);
   editAndCheckBoxContainer.appendChild(taskCheckBox);
   taskContainer.appendChild(editAndCheckBoxContainer);
-
+  // add the task to the tasks panel
   if (isCompleted) {
     taskContainer.classList.add("completed");
     taskContainer.style.textDecoration = "line-through";
     // remove the edit button
     editAndCheckBoxContainer.removeChild(editBtn);
   }
-
+  // add the task to the tasks panel
   descriptionTextNode.addEventListener("blur", function () {
     descriptionTextNode.contentEditable = false;
+    // get the new description text
     const newDesc = descriptionTextNode.textContent.trim();
     if (newDesc) {
+      // update the description text
       desc = newDesc;
+      // update the description text in localStorage
       projectTasks.currentTasks.forEach((task) => {
         if (task.title === descriptionText) {
           task.title = newDesc;
           localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
+          // reload the page
           location.reload();
         }
       });
     }
   });
-  
+  // add the task to the tasks panel
   return taskContainer;
-}
-
-
-// PROJECT SELECTION MODULE
-// this function selects a project from the project list
-function projectSelection(task) {
-  
 }
 
 // TASKS
@@ -185,37 +195,39 @@ function completeTask() {
   // Get the description of the task that was just checked
   let taskDescription = this.parentNode.parentNode.firstChild;
   console.log(`taskDescription: ${taskDescription}`);
-
   // If the checkbox is checked:
   if (this.checked) {
     // Add a line through the task description to indicate that it's been completed
     taskDescription.style.setProperty("text-decoration", "line-through");
     // reload the page
     location.reload();
-
     // Define a new function called moveTaskToCompleted, and bind it to the checkbox element
     (function moveTaskToCompleted() {
       // Get the ID of the task from the value of the checkbox
       let taskId = taskDescription.textContent;
-
-      // Match the taskId with the index of the task in the currentTasks array
-      let taskIndex = projectTasks[0].currentTasks.findIndex((task) => {
-        return taskId == task.title;
+      // Get the index of the project in the projectTasks array
+      let projectIndex = projectTasks.findIndex((project) => {
+        return (
+          project.projectName == window.localStorage.getItem("projectname")
+        );
       });
-
+      // Match the taskId with the index of the task in the currentTasks array
+      let taskIndex = projectTasks[projectIndex].currentTasks.findIndex(
+        (task) => {
+          return taskId == task.title;
+        }
+      );
       // Remove the task from the currentTasks array
-      let [task] = projectTasks[0].currentTasks.splice(taskIndex, 1);
-
+      let [task] = projectTasks[projectIndex].currentTasks.splice(taskIndex, 1);
       // Add a DateCompleted property to the task object
       task.DateCompleted = new Date();
-
       // Add the task to the completedTasks array
-      projectTasks[0].completedTasks.push(...[task]);
-
+      projectTasks[projectIndex].completedTasks.push(...[task]);
       // Save the updated projectTasks array to local storage
       localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
-    }.bind(this)());
-
+      // reload the page
+      location.reload();
+    }.bind(this)()); // bind the moveTaskToCompleted function to the checkbox element
     // If the checkbox is unchecked:
   } else {
     // Remove the line-through from the task description
@@ -228,39 +240,41 @@ function completeTask() {
 function unCompleteTask() {
   // Get the description of the task that was just unchecked
   let text = this.parentNode.parentNode.firstChild;
-
   // If the checkbox is not checked:
   if (!this.checked) {
     // Remove the line-through from the task description
     text.style.removeProperty("text-decoration");
     location.reload();
-
     // Define a new function called moveTaskToCurrent, and bind it to the checkbox element
     function moveTaskToCurrent() {
       // Get the ID of the task from the text content of the task description
       let taskId = text.textContent;
-
-      // Match the taskId with the title of the task in the completedTasks array
-      let taskIndex = projectTasks[0].completedTasks.findIndex((task) => {
-        return task.title == taskId;
+      // get the project index
+      let projectIndex = projectTasks.findIndex((project) => {
+        return (
+          project.projectName == window.localStorage.getItem("projectname")
+        );
       });
-
+      // Match the taskId with the title of the task in the completedTasks array
+      let taskIndex = projectTasks[projectIndex].completedTasks.findIndex(
+        (task) => {
+          return task.title == taskId;
+        }
+      );
       // Remove the task from the completedTasks array
-      let [task] = projectTasks[0].completedTasks.splice(taskIndex, 1);
-
+      let [task] = projectTasks[projectIndex].completedTasks.splice(
+        taskIndex,
+        1
+      );
       // Delete the DateCompleted property from the task object
       delete task.DateCompleted;
-
       // Add the task to the currentTasks array
-      projectTasks[0].currentTasks.push(task);
-
+      projectTasks[projectIndex].currentTasks.push(task);
       // Save the updated projectTasks array to local storage
       localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
     }
-
     // Call the moveTaskToCurrent function
-    moveTaskToCurrent.call(this);
-
+    moveTaskToCurrent.call(this); // bind the moveTaskToCurrent function to the checkbox element
     // If the checkbox is checked:
   } else {
     // Add a line through the task description to indicate that it's still incomplete
@@ -276,26 +290,26 @@ function createCheckbox() {
 }
 
 // TASK OBJECT CREATOR
+// This function creates a new task object
 function Task(title, projectIndex) {
+  // If the title is not empty:
   if (title !== "") {
     let currentIds = [];
     let completedIds = [];
-
     // Get the current and completed tasks of the project
     projectTasks[projectIndex].currentTasks.forEach((task) => {
       currentIds.push(task.id);
     });
-
+    // Get the completed tasks of the project
     projectTasks[projectIndex].completedTasks.forEach((task) => {
       completedIds.push(task.id);
     });
-
     // Find a unique id for the new task
     let newId = 1;
     while (currentIds.includes(newId) || completedIds.includes(newId)) {
       newId++;
     }
-
+    // Create a new task object
     let newTask = {
       id: newId,
       title: title,
@@ -303,17 +317,18 @@ function Task(title, projectIndex) {
       dateDue: new Date(),
       timeDue: "",
       priority: "None",
-      desc: ""
+      desc: "",
     };
-
     // Push the new task to the correct project
     projectTasks[projectIndex].currentTasks.push(newTask);
+    // Save the updated projectTasks array to local storage
     window.localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
-
+    // Return the new task object
     return newTask;
   }
 }
 
+// TASK DETAILS OBJECT CREATOR
 class TaskDetails {
   constructor(id, title, projectName, dateDue, timeDue, priority, desc) {
     this.id = id;
@@ -326,21 +341,25 @@ class TaskDetails {
   }
 }
 
+// EDIT TASK DETAILS
 function editTaskDetails(taskTitle, projectName) {
-  const project = projectTasks.find((project) => project.projectName === projectName);
-
+  // find the project
+  const project = projectTasks.find(
+    (project) => project.projectName === projectName
+  );
+  // if the project is not found:
   if (!project) {
     console.error(`Project "${projectName}" not found.`);
     return;
   }
-
+  // find the task
   const task = project.currentTasks.find((task) => task.title === taskTitle);
-
+  // if the task is not found:
   if (!task) {
     console.error(`Task "${taskTitle}" not found in project "${projectName}".`);
     return;
   }
-
+  // get the task details
   const taskTitleInput = taskTitle;
   console.log(`taskTitleInput: ${taskTitleInput}`);
   const projectSelector = document.getElementById("project-selector");
@@ -348,36 +367,35 @@ function editTaskDetails(taskTitle, projectName) {
   const timeDueInput = document.getElementById("time-due");
   const prioritySelector = document.getElementById("priority-selector");
   const taskDescriptionInput = document.getElementById("task-description");
-
+  // create a new task details object
   const taskDetails = new TaskDetails(
     task.id,
     taskTitleInput,
-    projectSelector.value,
+    projectSelector.value, // rework: need to get the value of the project selector and use it as the project name
     dateDueInput.value,
     timeDueInput.value,
     prioritySelector.value,
     taskDescriptionInput.value
   );
-  
-  const taskProject = projectTasks.find((project) => project.projectName === taskDetails.projectName);
-  
+  // find the project that the task belongs to
+  const taskProject = projectTasks.find(
+    (project) => project.projectName === taskDetails.projectName
+  );
+  // if the project is not found:
   if (!taskProject) {
     console.error(`Project "${taskDetails.projectName}" not found.`);
     return;
   }
-
+  // add the task to the project
   taskProject.currentTasks.push(taskDetails);
+  // remove the task from the current project
   project.currentTasks.splice(project.currentTasks.indexOf(task), 1);
-  
-  console.log(`Task "${taskTitle}" edited successfully in project "${projectName}".`);
+  // save the updated projectTasks array to local storage
+  console.log(
+    `Task "${taskTitle}" edited successfully in project "${projectName}".`
+  );
   localStorage.setItem("projectTasks", JSON.stringify(projectTasks));
 }
-
-
-
-
-
-
 
 // TASK DETAILS DOM ELEMENTS
 // this function creates the task details elements
@@ -391,22 +409,17 @@ function editTaskDetailsDOM(taskName) {
       return task.title === taskName;
     });
   });
-  // console.log(`project: ${JSON.stringify(project.projectName)}`);
-  if (project && project.projectName) {
-    console.log(`project.projectName: ${project.projectName}`);
-  }
-  
+  // if the project is not found:
   if (!project) {
     console.error(`Project not found for task "${taskName}".`);
     return;
   }
-
+  // create a new task details container
   const taskDetailsContainer = document.createElement("ul");
   taskDetailsContainer.id = "details";
-
   // set data attribute for taskDetailsContainer
   taskDetailsContainer.setAttribute("data-task", taskName);
-
+  // create an element for task details
   const elements = [
     { type: "h3", text: "Project" },
     {
@@ -439,7 +452,7 @@ function editTaskDetailsDOM(taskName) {
       attributes: { placeholder: "Enter description." },
     },
   ];
-
+  // append the elements to the task details container
   for (const { type, text, id, options, attributes, title } of elements) {
     const element = document.createElement(type);
     if (text) {
@@ -465,16 +478,16 @@ function editTaskDetailsDOM(taskName) {
     }
     taskDetailsContainer.appendChild(element);
   }
-
+  // create a container for the detail buttons
   const detailBtnsContainer = document.createElement("div");
   detailBtnsContainer.id = "detail-btns";
-
+  // create the detail buttons
   const detailBtns = [
     { type: "div", id: "save-btn", title: "Save Changes" },
     { type: "div", id: "cancel-btn", title: "Cancel Changes" },
     { type: "div", id: "delete-btn", title: "Delete Task" },
   ];
-
+  // append the detail buttons to the detail buttons container
   for (const { type, id, title } of detailBtns) {
     const element = document.createElement(type);
     if (id) {
@@ -486,7 +499,6 @@ function editTaskDetailsDOM(taskName) {
     detailBtnsContainer.appendChild(element);
     taskDetailsContainer.appendChild(detailBtnsContainer);
   }
-
   // after the taskDetailsContainer is created, details from the taskName need to be added to the taskDetailsContainer
   // find the taskName in projectTasks array
   const task = project.currentTasks.find((task) => task.title === taskName);
@@ -495,24 +507,24 @@ function editTaskDetailsDOM(taskName) {
     console.error(`Task "${taskName}" not found.`);
     return;
   }
-
   // add the task details to the taskDetailsContainer
-  taskDetailsContainer.querySelector("#project-selector").value = task.projectName;
+  taskDetailsContainer.querySelector("#project-selector").value =
+    task.projectName;
   taskDetailsContainer.querySelector("#date-due").value = task.dateDue;
   taskDetailsContainer.querySelector("#time-due").value = task.timeDue;
-  taskDetailsContainer.querySelector("#priority-selector").value = task.priority;
+  taskDetailsContainer.querySelector("#priority-selector").value =
+    task.priority;
   taskDetailsContainer.querySelector("#task-description").value = task.desc;
-
-
-  
   // select the detailBtns with an id of save-btn and add an event listener to it
   // when clicked, call the editTaskDetails function
-  taskDetailsContainer.querySelector("#save-btn").addEventListener("click", () => {
-    console.log(`save-btn clicked`);
-    editTaskDetails(taskName, project.projectName);
-    location.reload();
-  });
-
+  taskDetailsContainer
+    .querySelector("#save-btn")
+    .addEventListener("click", () => {
+      console.log(`save-btn clicked`);
+      editTaskDetails(taskName, project.projectName); // taskName and projectName are passed to the editTaskDetails function
+      location.reload();
+    });
+  // create function that sets the width of the select elements
   const setSelectWidth = () => {
     const setWidth = (select) => {
       let maxTextLength = 0;
@@ -526,13 +538,12 @@ function editTaskDetailsDOM(taskName) {
     setWidth(taskDetailsContainer.querySelector("#project-selector"));
     setWidth(taskDetailsContainer.querySelector("#priority-selector"));
   };
-
+  // call the setSelectWidth function upon page load
   window.addEventListener("load", setSelectWidth);
-
+  // return the taskDetailsContainer
   return taskDetailsContainer;
 }
-
-
+// export the functions
 export {
   addProject,
   createListItem,
