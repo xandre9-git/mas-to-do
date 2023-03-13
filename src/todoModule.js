@@ -510,6 +510,7 @@ function editTaskDetailsDOM(taskName) {
   taskDetailsContainer.querySelector("#save-btn").addEventListener("click", () => {
     console.log(`save-btn clicked`);
     editTaskDetails(taskName, project.projectName);
+    location.reload();
   });
 
   const setSelectWidth = () => {
@@ -530,7 +531,6 @@ function editTaskDetailsDOM(taskName) {
 
   return taskDetailsContainer;
 }
-
 
 
 export {
