@@ -13,7 +13,7 @@ export { projects };
 // Initialize an array for project tasks with a default object
 let projectTasks = [
   {
-    projectName: "Unnamed Project",
+    projectName: "My Tasks",
     currentTasks: [],
     completedTasks: [],
   },
